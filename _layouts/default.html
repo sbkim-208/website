@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+<head>
+  {% include head.html %}
+</head>
+<body>
+  <a class="skip-link" href="#content">Skip to content</a>
+  {% include nav.html %}
+  <main id="content" class="wrap">
+    {{ content }}
+  </main>
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>&copy; {{ 'now' | date: "%Y" }} {{ site.author.name }}. Built with
+        <a href="https://jekyllrb.com/">Jekyll</a> · hosted on GitHub Pages.</p>
+    </div>
+  </footer>
+</body>
+</html>

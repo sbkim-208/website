@@ -1,0 +1,6 @@
+- school: "Your University"
+  when: "2021 – present"
+  detail: "Ph.D. in Electrical & Computer Engineering"
+- school: "Your Undergrad University"
+  when: "2016 – 2020"
+  detail: "B.S. in Computer Science"

@@ -1,0 +1,8 @@
+- role: "Research Intern"
+  org: "Some Lab / Company"
+  when: "Summer 2024"
+  detail: "Worked on something cool"
+- role: "Graduate Research Assistant"
+  org: "Your University"
+  when: "2021 – present"
+  detail: "Machine learning and robotics"

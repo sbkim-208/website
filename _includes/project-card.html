@@ -1,0 +1,20 @@
+<div class="card">
+  {% if include.project.thumbnail %}
+  <a class="card-thumb" href="{{ include.project.url | relative_url }}">
+    <img src="{{ include.project.thumbnail | relative_url }}" alt="{{ include.project.title }}">
+  </a>
+  {% endif %}
+  <div class="card-body">
+    <h3><a href="{{ include.project.url | relative_url }}">{{ include.project.title }}</a></h3>
+    {% if include.project.authors %}<p class="authors">{{ include.project.authors }}</p>{% endif %}
+    {% if include.project.venue %}<p class="venue">{{ include.project.venue }}{% if include.project.year %}, {{ include.project.year }}{% endif %}</p>{% endif %}
+    {% if include.project.summary %}<p class="summary">{{ include.project.summary }}</p>{% endif %}
+    {% if include.project.links %}
+    <p class="links">
+      {% for link in include.project.links %}
+        <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.name }}</a>{% unless forloop.last %} · {% endunless %}
+      {% endfor %}
+    </p>
+    {% endif %}
+  </div>
+</div>

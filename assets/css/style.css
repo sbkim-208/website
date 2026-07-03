@@ -1,0 +1,127 @@
+/* ---------- Base ---------- */
+:root {
+  --fg: #1a1a1a;
+  --muted: #666;
+  --accent: #2a5db0;
+  --border: #e6e6e6;
+  --bg: #ffffff;
+  --max: 760px;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  color: var(--fg);
+  background: var(--bg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.wrap { max-width: var(--max); margin: 0 auto; padding: 0 20px; }
+
+.skip-link {
+  position: absolute; left: -999px;
+}
+.skip-link:focus {
+  left: 12px; top: 12px; background: #fff; padding: 8px 12px; z-index: 10;
+  border: 1px solid var(--border); border-radius: 4px;
+}
+
+/* ---------- Header / nav ---------- */
+.site-header {
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0; background: rgba(255,255,255,0.92);
+  backdrop-filter: saturate(180%) blur(8px);
+  z-index: 5;
+}
+.nav-wrap {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 14px; padding-bottom: 14px;
+}
+.site-title { font-weight: 700; color: var(--fg); font-size: 18px; }
+.site-nav a { margin-left: 18px; color: var(--fg); }
+
+/* ---------- Profile ---------- */
+.profile {
+  display: flex; gap: 28px; align-items: center;
+  margin: 44px 0 12px;
+}
+.avatar {
+  width: 160px; height: 160px; border-radius: 50%;
+  object-fit: cover; flex-shrink: 0; border: 1px solid var(--border);
+}
+.profile-text h1 { margin: 0 0 8px; font-size: 26px; }
+.social { color: var(--muted); font-size: 15px; }
+
+/* ---------- Sections ---------- */
+section { margin: 40px 0; }
+h2 {
+  font-size: 20px; border-bottom: 1px solid var(--border);
+  padding-bottom: 6px; margin-bottom: 18px;
+}
+
+/* ---------- News ---------- */
+.news-list { list-style: none; padding: 0; margin: 0; }
+.news-list li { margin-bottom: 8px; }
+.news-list .date {
+  display: inline-block; min-width: 84px; color: var(--muted);
+  font-variant-numeric: tabular-nums; font-size: 14px;
+}
+
+/* ---------- Project cards ---------- */
+.card {
+  display: flex; gap: 18px; margin-bottom: 26px; align-items: flex-start;
+}
+.card-thumb { flex-shrink: 0; }
+.card-thumb img {
+  width: 180px; height: 110px; object-fit: cover; border-radius: 6px;
+  border: 1px solid var(--border);
+}
+.card-body h3 { margin: 0 0 4px; font-size: 17px; }
+.authors { margin: 2px 0; font-size: 15px; }
+.venue { margin: 2px 0; color: var(--muted); font-size: 14px; font-style: italic; }
+.summary { margin: 6px 0; font-size: 15px; }
+.links { margin: 6px 0 0; font-size: 14px; }
+
+/* ---------- CV lists (edu / experience) ---------- */
+.cv-list { list-style: none; padding: 0; margin: 0; }
+.cv-list li { margin-bottom: 14px; }
+.cv-main { display: flex; justify-content: space-between; gap: 12px; }
+.cv-when { color: var(--muted); font-size: 14px; white-space: nowrap; }
+.cv-sub { color: var(--muted); font-size: 15px; }
+
+/* ---------- Project page ---------- */
+.project-page { margin-top: 40px; }
+.project-hero { max-width: 100%; border-radius: 8px; margin: 16px 0; border: 1px solid var(--border); }
+.project-body { margin-top: 20px; }
+.back { margin-top: 40px; }
+
+/* ---------- Footer ---------- */
+.site-footer {
+  border-top: 1px solid var(--border); margin-top: 60px;
+  padding: 24px 0; color: var(--muted); font-size: 14px;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 600px) {
+  .profile { flex-direction: column; text-align: center; }
+  .card { flex-direction: column; }
+  .card-thumb img { width: 100%; height: auto; }
+}
+
+/* ---------- Dark mode ---------- */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: #e8e8e8; --muted: #9aa0a6; --accent: #7aa2f7;
+    --border: #2a2a2a; --bg: #121212;
+  }
+  .site-header { background: rgba(18,18,18,0.92); }
+  .skip-link:focus { background: #1c1c1c; }
+}

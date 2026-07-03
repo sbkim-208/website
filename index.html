@@ -1,0 +1,81 @@
+---
+layout: default
+---
+
+<!-- ===== Profile ===== -->
+<section class="profile">
+  <img class="avatar" src="{{ site.author.photo | relative_url }}" alt="{{ site.author.name }}">
+  <div class="profile-text">
+    <h1>{{ site.author.name }}</h1>
+    <p>{{ site.author.bio }}</p>
+    <p class="social">
+      {% if site.author.email %}<a href="mailto:{{ site.author.email }}">Email</a>{% endif %}
+      {% if site.author.github %} · <a href="https://github.com/{{ site.author.github }}" target="_blank" rel="noopener">GitHub</a>{% endif %}
+      {% if site.author.cv %} · <a href="{{ site.author.cv | relative_url }}" target="_blank" rel="noopener">CV</a>{% endif %}
+      {% if site.author.linkedin %} · <a href="https://www.linkedin.com/in/{{ site.author.linkedin }}" target="_blank" rel="noopener">LinkedIn</a>{% endif %}
+      {% if site.author.scholar %} · <a href="https://scholar.google.com/citations?user={{ site.author.scholar }}" target="_blank" rel="noopener">Google Scholar</a>{% endif %}
+    </p>
+  </div>
+</section>
+
+<!-- ===== News ===== -->
+{% if site.data.news %}
+<section class="news">
+  <h2>News</h2>
+  <ul class="news-list">
+    {% for item in site.data.news %}
+    <li><span class="date">{{ item.date }}</span> {{ item.text }}</li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<!-- ===== Research (project cards from _projects/*.md) ===== -->
+<section class="research" id="research">
+  <h2>Research</h2>
+  {% assign research = site.projects | where: "category", "research" | sort: "year" | reverse %}
+  {% for project in research %}
+    {% include project-card.html project=project %}
+  {% endfor %}
+</section>
+
+<!-- ===== Education ===== -->
+{% if site.data.education %}
+<section class="education">
+  <h2>Education</h2>
+  <ul class="cv-list">
+    {% for e in site.data.education %}
+    <li>
+      <div class="cv-main"><strong>{{ e.school }}</strong><span class="cv-when">{{ e.when }}</span></div>
+      <div class="cv-sub">{{ e.detail }}</div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<!-- ===== Experience ===== -->
+{% if site.data.experience %}
+<section class="experience">
+  <h2>Experience</h2>
+  <ul class="cv-list">
+    {% for x in site.data.experience %}
+    <li>
+      <div class="cv-main"><strong>{{ x.role }}</strong><span class="cv-when">{{ x.when }}</span></div>
+      <div class="cv-sub">{{ x.org }}{% if x.detail %} — {{ x.detail }}{% endif %}</div>
+    </li>
+    {% endfor %}
+  </ul>
+</section>
+{% endif %}
+
+<!-- ===== Other Projects (category != research) ===== -->
+{% assign others = site.projects | where_exp: "p", "p.category != 'research'" | sort: "year" | reverse %}
+{% if others.size > 0 %}
+<section class="other-projects">
+  <h2>Other Projects</h2>
+  {% for project in others %}
+    {% include project-card.html project=project %}
+  {% endfor %}
+</section>
+{% endif %}

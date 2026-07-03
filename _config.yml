@@ -1,0 +1,53 @@
+# --- Site settings ---
+title: Minkyu Choi
+tagline: PhD Student
+description: >-
+  Personal academic website — research, publications, and projects.
+# Set this to your GitHub Pages URL. For a user site: https://<username>.github.io
+# For a project site, also set baseurl: "/<repo-name>"
+url: "https://minkyu.github.io"
+baseurl: ""
+
+# --- Profile (edit these) ---
+author:
+  name: Minkyu Choi
+  bio: >-
+    I am a PhD student, working on machine learning and robotics.
+    I am interested in helping machines understand the world.
+  photo: /assets/img/profile.jpg
+  email: minkyu@synthefy.com
+  github: yourusername
+  linkedin: yourusername
+  scholar: XXXXXXXX          # Google Scholar user id (from &user=... in the URL)
+  cv: /assets/cv.pdf
+
+# --- Build settings ---
+markdown: kramdown
+highlighter: rouge
+permalink: /projects/:name/
+
+# Collections: drop a .md file in _projects/ to add a project.
+collections:
+  projects:
+    output: true
+    permalink: /projects/:name/
+
+defaults:
+  - scope:
+      path: ""
+      type: projects
+    values:
+      layout: project
+
+# Sort/exclude
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - README.md
+  - vendor
+  - .sass-cache
+  - .jekyll-cache
+
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
