@@ -1,8 +1,8 @@
-- role: "Research Intern"
-  org: "Some Lab / Company"
-  when: "Summer 2024"
-  detail: "Worked on something cool"
-- role: "Graduate Research Assistant"
-  org: "Your University"
-  when: "2021 – present"
-  detail: "Machine learning and robotics"
+
+- role: "Train Operator"
+  org: "Korail"
+  when: "2020 – 2024"
+  detail: "Operated passenger trains in accordance with safety 
+  regulations and schedules, performed pre-departure inspections,
+   monitored track and signal conditions, 
+   and responded to emergencies to ensure passenger safety."

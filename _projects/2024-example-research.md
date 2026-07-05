@@ -2,7 +2,7 @@
 title: "Learning Representations for Household Robots"
 category: research          # "research" -> Research section; anything else -> Other Projects
 year: 2024
-authors: "Minkyu Choi, Co-Author A, Co-Author B"
+authors: "Subin Kim, Co-Author A, Co-Author B"
 venue: "Conference on Robot Learning (CoRL)"
 thumbnail: /assets/img/projects/example.png
 summary: "A one-line description of the paper that shows up on the homepage card."

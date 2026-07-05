@@ -1,6 +1,6 @@
 # --- Site settings ---
-title: Minkyu Choi
-tagline: PhD Student
+title: Subin Kim
+tagline: Master's Student
 description: >-
   Personal academic website — research, publications, and projects.
 # Set this to your GitHub Pages URL. For a user site: https://<username>.github.io
@@ -10,13 +10,13 @@ baseurl: ""
 
 # --- Profile (edit these) ---
 author:
-  name: Minkyu Choi
+  name: Subin Kim
   bio: >-
-    I am a PhD student, working on machine learning and robotics.
-    I am interested in helping machines understand the world.
-  photo: /assets/img/profile.jpg
-  email: minkyu@synthefy.com
-  github: yourusername
+    I am a master's student with a strong interest in transportation systems.
+    I am interested in making transportation smarter and more sustainable.
+  photo: /assets/img/profile.png
+  email: sbkim208@gmail.com
+  github: sbkim-208
   linkedin: yourusername
   scholar: XXXXXXXX          # Google Scholar user id (from &user=... in the URL)
   cv: /assets/cv.pdf
