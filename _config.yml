@@ -1,19 +1,19 @@
 # --- Site settings ---
 title: Subin Kim
-tagline: Master's Student
+tagline: Master Student
 description: >-
   Personal academic website — research, publications, and projects.
 # Set this to your GitHub Pages URL. For a user site: https://<username>.github.io
 # For a project site, also set baseurl: "/<repo-name>"
-url: "https://minkyu.github.io"
-baseurl: ""
+url: "https://sbkim-208.github.io"
+baseurl: "/website"
 
 # --- Profile (edit these) ---
 author:
   name: Subin Kim
   bio: >-
-    I am a master's student with a strong interest in transportation systems.
-    I am interested in making transportation smarter and more sustainable.
+    I am a Master student, working on transportation systems.
+    I am interested in helping machines understand the world.
   photo: /assets/img/profile.png
   email: sbkim208@gmail.com
   github: sbkim-208
