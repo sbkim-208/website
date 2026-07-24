@@ -6,7 +6,7 @@ layout: default
   {% if page.authors %}<p class="authors">{{ page.authors }}</p>{% endif %}
   {% if page.venue %}<p class="venue">{{ page.venue }}{% if page.year %}, {{ page.year }}{% endif %}</p>{% endif %}
 
-  {% if page.thumbnail %}
+  {% if page.thumbnail and page.hide_hero != true %}
   <img class="project-hero" src="{{ page.thumbnail | relative_url }}" alt="{{ page.title }}">
   {% endif %}
 
