@@ -3,7 +3,7 @@ title: "NYC Traffic Sensor Network: Reliability & Congestion Analysis"
 category: other # not "research" -> appears under "Other Projects"
 year: 2026
 summary: "Reliability and congestion analysis of 4.2M NYC DOT traffic sensor readings across 5 boroughs, uncovering why sensors fail and how congestion actually differs by borough."
-thumbnail: /assets/img/projects/nyc-traffic-borough-reliability.png
+thumbnail: /assets/img/projects/nyc-traffic-congestion-sensor-map.jpg
 links:
     - name: Code
       url: https://github.com/sbkim-208/nyc_traffic_data_analysis
@@ -16,3 +16,9 @@ Sensor reliability varies sharply by borough (56% in Manhattan vs. 93% in Queens
 After cleaning (removing 16 fully-dead segments, time-based interpolation for the rest), a time-series analysis showed Manhattan is uniformly slow all day rather than "worst at rush hour," while Brooklyn, Bronx, and Queens are highway-fast overnight and collapse hardest during peak hours — they carry the network's actual peak-hour congestion problem.
 
 Also built lag/rolling features for downstream ML forecasting, including a stuck-sensor diagnostic (12+ identical consecutive readings) that flags frozen sensors a status-code filter alone would miss — 5.92% of all rows, with four segments stuck 100% of the time across the full 4 months. Lag correlation stays very high at short horizons (0.97 at 5 min, 0.90 at 30 min) but drops off meaningfully at longer ones (0.78 at 1 day, 0.67 at 30 day): any forecasting model has to beat a naive persistence baseline to be worth using at short horizons, while calendar/cyclical features have real room to add value precisely where persistence weakens, at the day-plus horizon.
+
+### Explore the map
+
+Every segment on the network, colored by borough, with line thickness showing PM-peak congestion and two separate hotspot markers — orange for the most congested segments, black for sensor error hotspots. Hover any line or marker for exact values.
+
+<iframe src="{{ '/assets/interactive/congestion_error_map.html' | relative_url }}" width="100%" height="600" style="border:0;"></iframe>
