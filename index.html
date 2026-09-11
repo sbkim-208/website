@@ -30,6 +30,17 @@ layout: default
 </section>
 {% endif %}
 
+<!-- ===== Projects (category != research) ===== -->
+{% assign others = site.projects | where_exp: "p", "p.category != 'research'" | sort: "year" | reverse %}
+{% if others.size > 0 %}
+<section class="other-projects" id="projects">
+  <h2>Projects</h2>
+  {% for project in others %}
+    {% include project-card.html project=project %}
+  {% endfor %}
+</section>
+{% endif %}
+
 <!-- ===== Research (project cards from _projects/*.md) ===== -->
 <section class="research" id="research">
   <h2>Research</h2>
@@ -66,16 +77,5 @@ layout: default
     </li>
     {% endfor %}
   </ul>
-</section>
-{% endif %}
-
-<!-- ===== Other Projects (category != research) ===== -->
-{% assign others = site.projects | where_exp: "p", "p.category != 'research'" | sort: "year" | reverse %}
-{% if others.size > 0 %}
-<section class="other-projects">
-  <h2>Other Projects</h2>
-  {% for project in others %}
-    {% include project-card.html project=project %}
-  {% endfor %}
 </section>
 {% endif %}
