@@ -1,8 +1,11 @@
-- school: "Your University"
-  when: "2021 – present"
-  detail: "Ph.D. in Electrical & Computer Engineering"
+- school: "University of Michigan -- Ann Arbor"
+  when: "2026 – present"
+  detail: "MS in Civil Engineering"
+  
+- school: "Korea National Open University (KNOU)"
+  when: "2025-present"
+  detail: "B.S. in Statistics and Data Science"
 
-- school: "" 
-- school: "National"
-  when: "2016 – 2020"
-  detail: "B.S. in Computer Science"
+- school: "Korea National University of Transportation (KNUT)"
+  when: "2016-2020"
+  detail: "B.S. in Railroad (Railway) Operation System Engineering"
