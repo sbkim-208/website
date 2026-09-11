@@ -1,5 +1,5 @@
 ---
-title: "Learning Representations for Household Robots"
+title: ""
 category: research          # "research" -> Research section; anything else -> Other Projects
 year: 2024
 authors: "Subin Kim, Co-Author A, Co-Author B"
