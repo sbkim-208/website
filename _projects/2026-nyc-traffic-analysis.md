@@ -12,7 +12,7 @@ links:
 
 ### 1. Overview
 
-I analyzed 4,233,169 rows of NYC DOT Traffic Speeds (NBE) sensor data, 5 boroughs, 2024-04-01 to 2024-08-01, to see how reliable the sensors actually are and how congestion really plays out across the city — then used that foundation to build and stress-test a speed-forecasting model, extended later with a full year (2024) plus a year-crossing test into 2025.
+I analyzed 4,233,169 rows of NYC DOT Traffic Speeds sensor data, from 2024-04-01 to 2024-08-01, to see how reliable the sensors actually are and how congestion really plays out across the five boroughs — then used that to test whether congestion could be predicted, and later extended it into a full year-crossing forecasting model.
 
 ### Explore the map
 
@@ -22,19 +22,19 @@ Every segment on the network, colored by borough, with line thickness showing PM
 
 ### 2. Problem
 
-NYC traffic gets called the most congested in the country pretty much by default. I wanted to see whether that congestion could actually be predicted well enough to be useful for something — but before I could get anywhere near prediction, I ran into a more basic question: could I even trust the sensor data I'd be building on? A quarter of this dataset turned out to be sensor error, not real traffic signal, so that question wasn't hypothetical.
+NYC's traffic is often called the most congested in the U.S. I wanted to see whether that congestion could be predicted well enough to find real solutions. But before I could get into any analysis or prediction, I realized I had to ask a more basic question first: could I even trust the sensor data I'd be working with?
 
 ### 3. Goals
 
-My first goal was to check whether the areas everyone assumes are the most congested (Manhattan, mainly) actually are, and whether those same areas also have worse sensor reliability — I wanted to know if "congested" and "untrustworthy sensor" were the same thing or two separate problems. Before touching any ML or DL, I needed to know the data could actually be trusted, including in the most congested spots, since that's exactly where a bad sensor would be easiest to miss. Once the data held up, the goal shifted to whether accurate short-term prediction was realistic at all — and if it was, what horizon and what baseline would actually make that claim mean something.
+My first goal was to check whether the areas assumed to be the most congested (Manhattan) actually were, and whether those same areas also had higher sensor error rates. Before testing machine learning or deep learning, I needed to know the data could be trusted, even in the most congested spots. In the end, the goal was to find out whether accurate prediction was something I could actually pull off in a realistic way.
 
 ### 4. Process
 
-I started by defining reliability as (total rows − rows with `status == -101`) / total rows, and checked it by borough before trusting any single network-wide number. Then I dropped the unused columns, cut the segments that never reported one valid reading in 4 months (nothing to interpolate from), and filled the rest with time-based interpolation — but I kept `status` itself untouched by that interpolation, since if I recomputed reliability off the cleaned data instead of the raw data, the denominator would shrink and reliability would look better than it actually is. I also didn't trust status codes alone to catch every bad sensor, so I added a stuck-run check for segments that report a "valid" status while the value itself never moves.
+I defined reliability as (total rows − rows with `status == -101`) / total rows and checked it by borough before trusting a single network-wide number. Then I dropped the unused columns, cut the segments that never reported one valid reading in 4 months, and filled the rest with time-based interpolation — but I kept `status` itself untouched by that, since interpolating it too would've made reliability look better than it actually is. I also added a stuck-run check for segments that report a "valid" status while the value itself never moves, since status codes alone weren't catching that.
 
-With the data cleaned, I pulled peak hour by borough and checked congestion against each segment's own overnight free-flow speed instead of just comparing absolute speeds across boroughs. Then, before building any forecasting model, I built the lag/rolling features it would need and checked lag correlation first, to know upfront how hard a baseline any model would actually have to beat.
+When I looked at peak hours by borough, Manhattan came out as the slowest overall — so I checked it against each segment's own overnight free-flow speed instead of just comparing raw speeds across boroughs. Then, before touching any forecasting model, I built the lag/rolling features it would need and checked lag correlation first, so I'd know upfront how hard a baseline any model would actually have to beat.
 
-That's where the original 4-month analysis stopped. I later extended it: pulled the full 2024–2025Q1 dataset, trained an XGBoost forecaster on all of 2024 and tested it on 2025 (a year it never saw), then went back and questioned three things I'd been assuming rather than checking — the 60-minute prediction horizon, whether persistence was really the hardest baseline available, and whether the model was uniformly good or just good on average.
+That's as far as the original 4-month analysis went. I later extended it: pulled the full 2024–2025Q1 dataset, trained an XGBoost forecaster on all of 2024 and tested it on 2025 (a year it never saw), then went back and checked three things I'd been assuming instead of actually testing — the 60-minute prediction horizon, whether persistence was really the hardest baseline available, and whether the model was uniformly good or just good on average.
 
 ### 5. Result
 
@@ -64,7 +64,7 @@ My guess is this comes down to geography — Queens is the largest borough by ar
 
 Manhattan only drops about 10.65 mph at peak, while Brooklyn and the Bronx drop 19–23 mph. So Manhattan isn't actually getting worse at rush hour — it's just slow all day, all the time, because it's built on a dense street grid instead of highways, which means constant signal stops adding delay no matter what time it is. The other boroughs are highway-fast overnight and collapse hard specifically at peak — they're the ones actually carrying a rush-hour congestion problem, not Manhattan.
 
-**Third**, congestion doesn't just disappear after one moment, it carries over. The correlation between current speed and speed 30 minutes later was still 0.896, so whatever's happening right now is a pretty strong predictor of the next half hour. That's actually a problem for any model I'd want to build later, since it would need to beat that simple "it'll probably still look like it does right now" guess to be worth using at all — a naive persistence baseline this strong isn't something to build a forecasting story around and hope nobody checks.
+**Third**, congestion doesn't just disappear after one moment — it carries over. The correlation between current speed and speed 30 minutes later was still 0.896, so whatever's happening right now is a pretty strong predictor of what happens in the next half hour. That's actually a problem for any model I'd want to build later, since a model would need to beat that simple "it'll probably look like it does right now" guess to actually be worth using.
 
 **Fourth**, when I actually built that forecaster (XGBoost, trained on all of 2024, tested on Jan–Mar 2025 — a year it never saw), it did beat persistence, and by a real margin:
 
