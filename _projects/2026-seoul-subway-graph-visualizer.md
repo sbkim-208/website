@@ -10,15 +10,21 @@ links:
       url: https://github.com/sbkim-208/session-4-graph-playground
 ---
 
-An interactive graph-algorithm simulator built for traffic-engineering interview prep: a FastAPI + WebSocket backend runs a search algorithm step by step and streams each intermediate state to a React/TypeScript frontend, which renders it live on a node-link canvas.
+I built an interactive graph-algorithm simulator to prepare for traffic-engineering interviews: a FastAPI + WebSocket backend runs a search algorithm step by step and streams each intermediate state to a React/TypeScript frontend I wrote to render it live on a node-link canvas.
 
 <img src="{{ '/assets/img/projects/seoul-graph-routing.gif' | relative_url }}" alt="A* search animating over the Seoul subway graph, then an algorithm-comparison table" style="max-width:100%;">
 
 A* searching Gangnam → Hapjeong on the Seoul subway graph — frontier nodes shown with their f-scores as the search expands, followed by the built-in comparison table across all five algorithms.
 
+### Design decisions
+
+**Why A\* over a precomputed lookup table.** Before writing `a_star.py`, I considered speeding up repeated queries by precomputing minimum transfer-to-transfer costs with Dijkstra once, then reusing that table as A*'s `h(n)` for any station pair. I rejected it: the table only lower-bounds the remaining cost correctly for the specific pairs it was actually computed on, so reusing it for an arbitrary query isn't automatically admissible — and an inadmissible heuristic breaks A*'s optimality guarantee. I used straight-line distance instead. It's a safe lower bound here because edge weights are travel-time-like and the layout roughly tracks true geography, and unlike the lookup table it needs no precomputation step at all.
+
+**Making ~50 overlapping Korean labels legible.** The placeholder node styling I'd built for the small 8-node grid demos fell apart the moment I loaded the real ~50-station subway graph — labels overlapped each other and had too little contrast against the dark canvas to read at a glance. I fixed it by switching the font to Pretendard Variable (proper Korean + Latin glyph coverage), bumping label size from 11px to 13px, replacing translucent "glass" node backgrounds with solid state-tinted colors, raising edge opacity from 0.3 to 0.7, and scaling the subway layout's coordinates by 1.6× so adjacent stations stop crowding each other.
+
 ### Architecture
 
-Every algorithm implements the same interface and yields `Step` frames — the one animation primitive the frontend needs to render any algorithm without knowing which one it is:
+I designed every algorithm to implement the same interface and yield `Step` frames — the one animation primitive the frontend needs to render any algorithm without knowing which one it is:
 
 ```python
 @dataclass
@@ -34,7 +40,7 @@ class Step:
     path: list[NodeId]              # set when done
 ```
 
-`core/registry.py` imports every module under `app/algorithms/` at startup, so a new algorithm — e.g. dropping in `a_star.py` with a `@register`-decorated class — is exposed through `/algorithms` and the frontend dropdown automatically, no client-side change needed.
+I built `core/registry.py` to import every module under `app/algorithms/` at startup, so I can drop in a new algorithm — e.g. `a_star.py` with a `@register`-decorated class — and have it show up through `/algorithms` and the frontend dropdown automatically, with no client-side change. This is the interface I actually used to add A* after the first three algorithms were already running.
 
 | Layer           | Choice                                               |
 | --------------- | ---------------------------------------------------- |
@@ -66,7 +72,7 @@ The `/eval` endpoint runs every registered algorithm against the same start/goal
 
 ### Case study: Gangnam → Hapjeong
 
-Running all five algorithms on this route through `/eval`:
+I ran all five algorithms on this route through `/eval` to check the A* payoff was real, not assumed:
 
 | Algorithm | Hops | Total Cost | Nodes Visited | Iterations |
 |---|---:|---:|---:|---:|
@@ -75,9 +81,7 @@ Running all five algorithms on this route through `/eval`:
 | BFS | 6 | 26 | 27 | 27 |
 | Dijkstra | 6 | 26 | 40 | 40 |
 
-All four reach the same optimal cost (26) and hop count (6) — there's no shortcut past these transfers — but they get there having looked at very different amounts of the graph. A* reaches it having visited only 7 of the ~50 stations, against Dijkstra's 40, because its heuristic (straight-line distance to the goal) keeps pulling the search toward Hapjeong instead of expanding uniformly outward in every direction. DFS's 25 isn't evidence it's competitive with A* in general — it's an artifact of this route's neighbor-list ordering happening to point roughly the right way; nothing in DFS biases it toward the goal the way A*'s heuristic does.
-
-A heuristic only buys this speedup if it's *admissible* (never overestimates remaining cost) — straight-line distance is a safe lower bound here since edge weights are travel-time-like and the layout roughly tracks true geography. A cruder alternative was considered and rejected for the general case: precomputing transfer-to-transfer costs with Dijkstra and reusing them as `h(n)` for arbitrary station pairs. That table isn't automatically a valid heuristic for a pair it wasn't computed for, and an inadmissible heuristic breaks A*'s optimality guarantee.
+All four reach the same optimal cost (26) and hop count (6) — there's no shortcut past these transfers — but they get there having looked at very different amounts of the graph. A* reaches it having visited only 7 of the ~50 stations, against Dijkstra's 40, because its heuristic keeps pulling the search toward Hapjeong instead of expanding uniformly outward in every direction — the design decision above paying off, measured rather than assumed. DFS's 25 isn't evidence it's competitive with A* in general — it's an artifact of this route's neighbor-list ordering happening to point roughly the right way; nothing in DFS biases it toward the goal the way A*'s heuristic does.
 
 ### Datasets
 
@@ -92,4 +96,4 @@ A heuristic only buys this speedup if it's *admissible* (never overestimates rem
 
 ### Visualization
 
-Each `Step` is colored on the canvas as it streams in: gray (unvisited) → yellow (frontier, labeled with its running cost/score) → red (current) → green (visited), with the final path drawn in blue with animated edges. Backend correctness is checked with `pytest` smoke tests.
+I color each `Step` on the canvas as it streams in: gray (unvisited) → yellow (frontier, labeled with its running cost/score) → red (current) → green (visited), with the final path drawn in blue with animated edges. I check backend correctness with `pytest` smoke tests.

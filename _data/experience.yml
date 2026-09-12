@@ -1,8 +1,21 @@
 
-- role: "Train Operator"
-  org: "Korail"
+- role: "Train Engineer"
+  org: "Korea Railroad Corporation (KORAIL), Hwaseong, South Korea"
   when: "2020 – 2024"
-  detail: "Operated passenger trains in accordance with safety 
+  detail: "Operated passenger trains in accordance with safety
   regulations and schedules, performed pre-departure inspections,
-   monitored track and signal conditions, 
+   monitored track and signal conditions,
    and responded to emergencies to ensure passenger safety."
+
+- role: "Train Operator"
+  org: "Incheon Transit Corporation, Incheon, South Korea"
+  when: "June – October 2020"
+  detail: "Operated ATO/ATC (Automatic Train Operation / Automatic Train
+   Control) rolling stock on Incheon Subway Line 1, monitoring automated
+   train operation and system safety."
+
+- role: "Train Operations Intern"
+  org: "Korea Railroad Corporation (KORAIL), Hwaseong, South Korea"
+  when: "January – March 2020"
+  detail: "Assisted with train operations training and observed
+   safety and scheduling procedures ahead of full-time operating duties."
