@@ -3,9 +3,18 @@ title: "Cooperative Intersection Scheduling: FCFS vs. Tree Search"
 category: other # not "research" -> appears under "Other Projects"
 year: 2026
 summary: "A 7-algorithm benchmark of cooperative-driving schedulers against a first-come-first-served baseline at an unsignalized intersection."
+thumbnail: /assets/img/projects/v2v-intersection-scheduling.gif
+hide_hero: true
+links:
+    - name: Code
+      url: https://github.com/sbkim-208/v2v-intersection-coordinator
 ---
 
 Built a browser-based simulator for an unsignalized intersection: vehicles spawn from 4 directions (Poisson arrivals), drive under an IDM car-following model, and — in V2V mode — request a time slot `{t0, t1}` from a pluggable scheduling algorithm before entering the conflict box. A Python server (`server.py`) routes each request to the active algorithm and hot-reloads on file save.
+
+<img src="{{ '/assets/img/projects/v2v-intersection-scheduling.gif' | relative_url }}" alt="V2V intersection simulator running the MCTS+heuristic scheduler at 22 veh/min" style="max-width:100%;">
+
+The MCTS+heuristic scheduler at 22 veh/min/approach — cyan lines are the live V2V mesh between vehicles inside comm range, amber vehicles are pacing to hit their assigned slot.
 
 Seven schedulers share the same request payload (vehicle state, confirmed grants, per-lane last slot, full vehicle snapshot, in-range neighbors) and the same constraints (return only the requesting vehicle's slot, never overlap the opposing axis, same-lane headway is FIFO):
 
