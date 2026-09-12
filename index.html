@@ -72,8 +72,8 @@ layout: default
   <ul class="cv-list">
     {% for x in site.data.experience %}
     <li>
-      <div class="cv-main"><strong>{{ x.role }}</strong><span class="cv-when">{{ x.when }}</span></div>
-      <div class="cv-sub">{{ x.org }}{% if x.detail %} — {{ x.detail }}{% endif %}</div>
+      <div class="cv-main"><strong>{{ x.org }}</strong><span class="cv-when">{{ x.when }}</span></div>
+      <div class="cv-sub">{{ x.role }}{% if x.detail %} — {{ x.detail }}{% endif %}</div>
     </li>
     {% endfor %}
   </ul>
