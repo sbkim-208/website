@@ -2,7 +2,7 @@
 title: "NYC Traffic Data Analysis"
 category: other # not "research" -> appears under "Other Projects"
 year: 2026
-summary: "Reliability and congestion analysis of 4.2M NYC DOT traffic sensor readings across 5 boroughs, uncovering why sensors fail and how congestion actually differs by borough."
+summary: "Reliability and congestion analysis of 4.2M NYC DOT traffic sensor readings across 5 boroughs, extended into a year-crossing XGBoost speed forecaster stress-tested against real baselines, boroughs, and horizons."
 thumbnail: /assets/img/projects/nyc-traffic-congestion-sensor-map.jpg
 hide_hero: true
 links:
@@ -10,7 +10,9 @@ links:
       url: https://github.com/sbkim-208/nyc_traffic_data_analysis
 ---
 
-Analyzed 4,233,169 rows of NYC DOT Traffic Speeds (NBE) sensor data — 5 boroughs, 2024-04-01 to 2024-08-01 — to answer two questions: how reliable are the sensors, and how does congestion actually vary across the city?
+### 1. Overview
+
+I analyzed 4,233,169 rows of NYC DOT Traffic Speeds (NBE) sensor data, 5 boroughs, 2024-04-01 to 2024-08-01, to see how reliable the sensors actually are and how congestion really plays out across the city — then used that foundation to build and stress-test a speed-forecasting model, extended later with a full year (2024) plus a year-crossing test into 2025.
 
 ### Explore the map
 
@@ -18,9 +20,25 @@ Every segment on the network, colored by borough, with line thickness showing PM
 
 <iframe src="{{ '/assets/interactive/congestion_error_map.html' | relative_url }}" width="100%" height="600" style="border:0;"></iframe>
 
-### 1. Sensor reliability
+### 2. Problem
 
-Reliability = (total rows − rows with `status == -101`) / total rows. Network-wide: **75.05%** (1,056,062 error rows out of 4,233,169).
+NYC traffic gets called the most congested in the country pretty much by default. I wanted to see whether that congestion could actually be predicted well enough to be useful for something — but before I could get anywhere near prediction, I ran into a more basic question: could I even trust the sensor data I'd be building on? A quarter of this dataset turned out to be sensor error, not real traffic signal, so that question wasn't hypothetical.
+
+### 3. Goals
+
+My first goal was to check whether the areas everyone assumes are the most congested (Manhattan, mainly) actually are, and whether those same areas also have worse sensor reliability — I wanted to know if "congested" and "untrustworthy sensor" were the same thing or two separate problems. Before touching any ML or DL, I needed to know the data could actually be trusted, including in the most congested spots, since that's exactly where a bad sensor would be easiest to miss. Once the data held up, the goal shifted to whether accurate short-term prediction was realistic at all — and if it was, what horizon and what baseline would actually make that claim mean something.
+
+### 4. Process
+
+I started by defining reliability as (total rows − rows with `status == -101`) / total rows, and checked it by borough before trusting any single network-wide number. Then I dropped the unused columns, cut the segments that never reported one valid reading in 4 months (nothing to interpolate from), and filled the rest with time-based interpolation — but I kept `status` itself untouched by that interpolation, since if I recomputed reliability off the cleaned data instead of the raw data, the denominator would shrink and reliability would look better than it actually is. I also didn't trust status codes alone to catch every bad sensor, so I added a stuck-run check for segments that report a "valid" status while the value itself never moves.
+
+With the data cleaned, I pulled peak hour by borough and checked congestion against each segment's own overnight free-flow speed instead of just comparing absolute speeds across boroughs. Then, before building any forecasting model, I built the lag/rolling features it would need and checked lag correlation first, to know upfront how hard a baseline any model would actually have to beat.
+
+That's where the original 4-month analysis stopped. I later extended it: pulled the full 2024–2025Q1 dataset, trained an XGBoost forecaster on all of 2024 and tested it on 2025 (a year it never saw), then went back and questioned three things I'd been assuming rather than checking — the 60-minute prediction horizon, whether persistence was really the hardest baseline available, and whether the model was uniformly good or just good on average.
+
+### 5. Result
+
+**First**, Queens came out as the most reliable borough overall (93.4%), way above Manhattan's 56.3%:
 
 | Borough       | Total rows | Error rate | Reliability |
 | ------------- | ---------- | ---------- | ----------- |
@@ -30,36 +48,11 @@ Reliability = (total rows − rows with `status == -101`) / total rows. Network-
 | Bronx         | 798,345    | 16.33%     | 83.7%       |
 | Queens        | 1,288,127  | 6.64%      | 93.4%       |
 
-Queens is the most reliable, Manhattan the least — a 6.6x gap. In Manhattan, Brooklyn, Staten Island, and Bronx, most of the worst segments sit at 100% error (fully dead sensors, e.g. the Verrazzano-Narrows Bridge, Major Deegan Expwy, West Shore Expwy, Staten Island Expwy, West Side Highway, Lincoln Tunnel), whereas Queens's worst segments are only partially unstable (19–33% error, none fully dead) — which is why Queens comes out on top overall.
-
 <img src="{{ '/assets/img/projects/nyc-traffic-borough-reliability.png' | relative_url }}" alt="Sensor reliability by borough" style="max-width:100%;">
 
-**Does congestion cause sensor failure?** I tested the obvious hypothesis — that heavy traffic on famously congested corridors (GWB approach, Lincoln Tunnel, West Side Highway) wears sensors down — on the two partially-dead Manhattan segments that still had some valid readings. The result was the opposite of what the hypothesis predicts: error rate was _lowest_ during rush hour (72–92%) and _highest_ overnight (~100%). **Rejected** — congestion doesn't explain sensor failure. What actually varies is which hours of the day a given segment happens to report valid data at all, a window that has to be checked per segment rather than assumed.
+My guess is this comes down to geography — Queens is the largest borough by area and its network is a lot more spread out, highways criss-crossing instead of one dense grid, so a single dead segment doesn't sink the borough's average the way it can in Manhattan. That's just my interpretation though, not something I directly tested in the data. What I did test was the obvious follow-up hypothesis — that heavy traffic on famously congested corridors wears sensors down — and the data said the opposite: error rate was lowest during rush hour and highest overnight. So congestion doesn't explain sensor failure; whatever's driving it is something else, tied to specific hours a given segment happens to report at all.
 
-### 2. Data processing
-
--   Dropped duplicate/unused columns (`link_id`, `transcom_id`, `encoded_poly_line`, `encoded_poly_line_lvls`).
--   Removed **16 fully-dead segments** (487,811 rows) that never reported a single valid reading in 4 months — nothing to anchor an interpolation to.
--   For the remaining segments, `status == -101` rows were set to NaN and filled with time-based interpolation, falling back to `ffill`/`bfill` at the edges. Missing `speed`/`travel_time` went from ~396K rows to 0.
--   Final row count: 4,233,169 → **3,745,358**.
-
-Interpolation only fills `speed`/`travel_time`, never `status` — so the reliability numbers above are always computed from the raw data, not the cleaned output, otherwise the denominator would shrink and reliability would look artificially better.
-
-### 3. Time series analysis
-
-Peak hour by borough (weekday, lowest average speed within the AM 6–9 / PM 15–19 windows):
-
-| Borough       | AM peak        | PM peak        |
-| ------------- | -------------- | -------------- |
-| Bronx         | 9am (31.8 mph) | 4pm (25.1 mph) |
-| Brooklyn      | 8am (29.6 mph) | 4pm (24.5 mph) |
-| Manhattan     | 9am (18.7 mph) | 4pm (15.3 mph) |
-| Queens        | 8am (32.8 mph) | 4pm (28.2 mph) |
-| Staten Island | 8am (46.4 mph) | 5pm (40.8 mph) |
-
-Four boroughs share the exact same PM peak hour (4pm); only Staten Island differs (5pm), and runs far faster overall. Staten Island has no subway — commuting runs through the Verrazzano Bridge and the ferry — so its congestion timing plausibly follows a structurally different pattern from the other four subway-served boroughs.
-
-**Is Manhattan really the most congested?** Using each segment's 2–4am average speed as a free-flow baseline:
+**Second**, I think Manhattan's congestion is really a geography problem, not a rush-hour problem. Comparing peak-hour speed against each segment's own overnight free-flow speed:
 
 | Borough       | Free-flow, mph | PM peak, mph | Absolute drop |
 | ------------- | -------------- | ------------ | ------------- |
@@ -69,22 +62,39 @@ Four boroughs share the exact same PM peak hour (4pm); only Staten Island differ
 | Brooklyn      | 47.15          | 24.51        | 22.64         |
 | Bronx         | 48.03          | 25.08        | 22.95         |
 
-Manhattan is slowest in absolute terms at every hour of the day, but has the _smallest_ drop from its own baseline — because that baseline is already low (a low-speed-limit street grid, not a highway). Manhattan isn't "worst at peak," it's **uniformly slow all day** — a structural property of the road network rather than a rush-hour phenomenon. Brooklyn, Bronx, and Queens, by contrast, are highway-fast overnight (~47–48 mph) and collapse hardest at peak (19–23 mph drop) — they carry the network's actual peak-hour congestion problem.
+Manhattan only drops about 10.65 mph at peak, while Brooklyn and the Bronx drop 19–23 mph. So Manhattan isn't actually getting worse at rush hour — it's just slow all day, all the time, because it's built on a dense street grid instead of highways, which means constant signal stops adding delay no matter what time it is. The other boroughs are highway-fast overnight and collapse hard specifically at peak — they're the ones actually carrying a rush-hour congestion problem, not Manhattan.
 
-### 4. ML/DL feature engineering
+**Third**, congestion doesn't just disappear after one moment, it carries over. The correlation between current speed and speed 30 minutes later was still 0.896, so whatever's happening right now is a pretty strong predictor of the next half hour. That's actually a problem for any model I'd want to build later, since it would need to beat that simple "it'll probably still look like it does right now" guess to be worth using at all — a naive persistence baseline this strong isn't something to build a forecasting story around and hope nobody checks.
 
-Built lag/rolling features for downstream forecasting (`build_ml_feature_df()`): each segment is first reindexed onto a regular 5-minute time grid (gaps time-interpolated up to a limit, longer gaps left as `NaN`) so that a shift actually corresponds to a fixed elapsed time, not just "n rows." On top of that: calendar features (hour, day-of-week, month, weekend), cyclical encodings (`sin`/`cos`, removing the 11pm→0am discontinuity), configurable minute/day lags, and a 24h rolling mean/std computed after a 1-step shift so the target never leaks into its own rolling stats.
+**Fourth**, when I actually built that forecaster (XGBoost, trained on all of 2024, tested on Jan–Mar 2025 — a year it never saw), it did beat persistence, and by a real margin:
 
-Lag correlation (`corr(speed, lag_X)`, all 125 segments, 4 months, 5-min grid):
+| Model                  | MAE   | RMSE  | R²    |
+| ----------------------- | ----- | ----- | ----- |
+| Naive (persistence)     | 5.994 | 9.881 | 0.658 |
+| XGBoost (year-crossing) | 5.119 | 7.945 | 0.769 |
 
-| Lag    | Correlation |
-| ------ | ----------- |
-| 5 min  | 0.969       |
-| 10 min | 0.944       |
-| 30 min | 0.896       |
-| 1 day  | 0.778       |
-| 30 day | 0.671       |
+That's unexplained variance dropping from 34.2% to 23.1%, and it held up on a full year gap, not just a lucky split of the same few months. But averages hide where a model fails, and this one has a real weak spot:
 
-Also built a **stuck-sensor diagnostic** that flags any run of ≥12 identical consecutive readings (1 hour on the 5-min grid) — almost certainly a frozen sensor rather than real traffic behavior, and something a status-code filter alone would miss. This caught 5.92% of all rows, with four segments stuck 100% of the time across the full 4 months.
+<img src="{{ '/assets/img/projects/nyc-traffic-year-over-year-performance.png' | relative_url }}" alt="Predicted vs actual, residual distribution, and monthly performance" style="max-width:100%;">
 
-**Takeaway:** short-horizon correlation (5–30 min) is high enough that any forecasting model has to beat a naive persistence baseline to be worth using. Longer horizons (1 day, 30 day) show meaningfully lower correlation, leaving real room for calendar/cyclical features to add value precisely where persistence weakens.
+Looking at predicted vs. actual (left panel), at low actual speeds — real congestion — the predictions cluster well above the diagonal. The model systematically underestimates how bad congestion actually gets, which shows up again as a long positive tail in the residuals. So it's good at typical traffic and not yet good at the moments a congestion alert would actually need to catch.
+
+**Fifth**, I went back and questioned the 60-minute horizon I'd been using, since my own lag-correlation table jumped straight from 30 minutes to 1 day with nothing measured in between. I filled that gap and found the correlation just keeps decaying smoothly through it — no cliff at 30 minutes, just a signal that keeps eroding:
+
+| Lag (min) | 30 | 45 | 60 | 90 | 120 |
+| --- | --- | --- | --- | --- | --- |
+| Correlation | 0.77 | 0.72 | 0.68 | 0.60 | 0.53 |
+
+That made me actually train a 30-minute model side by side with the 60-minute one and break both down by borough:
+
+<img src="{{ '/assets/img/projects/nyc-traffic-horizon-borough-comparison.png' | relative_url }}" alt="Lag correlation curve and 30min vs 60min RMSE by borough" style="max-width:100%;">
+
+30 minutes won in all 5 boroughs, no exceptions — RMSE dropped 8–15% depending on the borough. So if the actual goal is a borough-level congestion signal, 30 minutes is the defensible choice, not 60 — I'd been defaulting to 60 without ever checking whether it was the right call.
+
+**Sixth**, I also checked whether persistence was really the toughest baseline available, and pulled feature importance to see what the model was actually leaning on:
+
+<img src="{{ '/assets/img/projects/nyc-traffic-report-extras.png' | relative_url }}" alt="Feature importance, baseline comparison, and peak vs off-peak error" style="max-width:100%;">
+
+Two things here I didn't expect. I tried a "same time yesterday" baseline, reasoning that the 1-day lag correlation (0.778) actually beats lag times past ~40 minutes, so it seemed like it should be a stronger competitor than plain persistence. It wasn't — it came out clearly worse (RMSE 12.2 vs. 8.6 at the 30-minute horizon), because "yesterday" isn't always the same day of the week (a Monday's yesterday is a Sunday), and that mismatch costs more than the extra correlation buys. The model's own feature importance agrees — `lag_1d` barely registers next to the current reading and the 10-minute lag. And peak hours (AM 6–9 / PM 15–19) turned out easier to predict than off-peak, not harder, which I also wasn't expecting going in — rush-hour congestion is a strong, recurring pattern the model has clearly learned, while off-peak variability is sparser and more incident-driven, and harder to pin down.
+
+So where this leaves things: persistence is still the real competitor, and the model beats it convincingly across a full year gap, in every borough, at the horizon that actually makes sense. It's reliable for typical traffic and for the recurring rush-hour pattern — it's just not a congestion-severity detector yet, which is the next thing I'd actually want to build.
