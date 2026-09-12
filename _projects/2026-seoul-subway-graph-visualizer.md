@@ -52,8 +52,23 @@ class Step:
 | BFS | Unweighted shortest path — queue-based, hop count |
 | DFS | Iterative, stack-based traversal |
 | Dijkstra | `heapq`-based, weighted, early-exits once the goal is popped |
+| A* | Designed as the next plug-and-play addition — `g(n) + h(n)` — not yet implemented as a registered algorithm |
 
 The `/eval` endpoint runs every registered algorithm against the same start/goal pair and reports path, hop count, path cost, nodes visited, iterations, elapsed time, and whether the result matches Dijkstra's cost (`optimal: true/false`) — a direct, on-graph illustration of why BFS's fewest-hops answer isn't always Dijkstra's least-cost answer once edges are weighted.
+
+### Case study: Gangnam → Hapjeong
+
+Running BFS, DFS, and Dijkstra on this same-line route through `/eval`:
+
+| Algorithm | Hops | Total Cost | Nodes Visited | Iterations |
+|---|---:|---:|---:|---:|
+| DFS | 6 | 26 | 25 | 25 |
+| BFS | 6 | 26 | 27 | 27 |
+| Dijkstra | 6 | 26 | 40 | 40 |
+
+All three land on the same path and cost — expected on a single line with uniform per-segment weights — but DFS touches the fewest nodes here. That's incidental to this particular graph and neighbor ordering, not a general property of DFS, which is what motivated adding A* to the design: it uses `g(n) + h(n)` (accumulated cost + estimated remaining cost) to bias search toward the goal, and can reach the same optimal cost while exploring fewer nodes than Dijkstra, given an admissible heuristic.
+
+One design considered was precomputing minimum transfer-to-transfer costs with Dijkstra and feeding them into A* as `h(n)` for real-time queries. The catch: a table of transfer-station-to-transfer-station distances isn't automatically a valid heuristic for an arbitrary station pair — it only lower-bounds the remaining cost correctly once composed with the querying station's actual distance to its nearest relevant transfer node. Getting this wrong (over-estimating the remainder) breaks A*'s optimality guarantee, and a heuristic that isn't consistent forces reopening closed nodes in graph-search A* — the standard implementation this project uses assumes it won't need to.
 
 ### Datasets
 
