@@ -17,8 +17,7 @@ author:
   photo: /assets/img/profile.png
   email: sbkim208@gmail.com
   github: sbkim-208
-  linkedin: subin-kim-7b13a9326
-  scholar: XXXXXXXX          # Google Scholar user id (from &user=... in the URL)
+  linkedin: subin-kim-7b13a9326     # Google Scholar user id (from &user=... in the URL)
   cv: /assets/cv.pdf
 
 # --- Build settings ---
