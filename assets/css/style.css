@@ -102,6 +102,15 @@ h2 {
 .project-hero { max-width: 100%; border-radius: 8px; margin: 16px 0; border: 1px solid var(--border); }
 .project-body { margin-top: 20px; }
 .back { margin-top: 40px; }
+.reflection {
+  margin: 28px 0 8px;
+  padding-left: 16px;
+  border-left: 3px solid var(--border);
+  font-family: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+  font-style: italic;
+  color: var(--muted);
+}
+.reflection h3 { font-family: inherit; font-style: normal; color: var(--fg); }
 
 /* ---------- Footer ---------- */
 .site-footer {

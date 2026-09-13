@@ -26,14 +26,15 @@ My first goal was to check whether the areas assumed to be the most congested (M
 
 ### 4. Process
 
-I measured reliability by boough as the percentage of records where status was not - 101. I removed segments with no valid readings, filled missing values using time-based interpolation owhile leaving status unchanged, and checked for values that stayed constant depsite a valid status. 
+I measured reliability by borough as the percentage of records where status was not -101. I removed segments with no valid readings, filled missing values using time-based interpolation while leaving status unchanged, and checked for values that stayed constant despite a valid status.
 
 Peak-hour speeds were compared with each segment’s overnight free-flow speed. Lag correlations helped assess persistence as a forecasting baseline.
 I later extended the analysis to 2024–Q1 2025, training XGBoost on 2024 and testing on Q1 2025. Evaluation covered 30- and 60-minute forecasts, persistence and “same time yesterday” baselines, and errors by borough and time of day.
 
 ### 5. Result
 
-First, Queens had the highest reliability at 93.4%, while Manhattan had the lowest at 56.3%. 
+First, Queens had the highest reliability at 93.4%, while Manhattan had the lowest at 56.3%.
+
 | Borough       | Total rows | Error rate | Reliability |
 | ------------- | ---------- | ---------- | ----------- |
 | Manhattan     | 904,947    | 43.70%     | 56.3%       |
@@ -44,7 +45,7 @@ First, Queens had the highest reliability at 93.4%, while Manhattan had the lowe
 
 <img src="{{ '/assets/img/projects/nyc-traffic-borough-reliability.png' | relative_url }}" alt="Sensor reliability by borough" style="max-width:100%;">
 
-Error rates were lowest during rush hour and highest overnight, contraty to my expectation that errors would be more common during heavy traffic. 
+Error rates were lowest during rush hour and highest overnight, contrary to my expectation that errors would be more common during heavy traffic.
 
 Second, I compared peak-hour speeds with each borough's overnight free-flow speed. 
 
@@ -58,7 +59,7 @@ Second, I compared peak-hour speeds with each borough's overnight free-flow spee
 
 Manhattan’s speed dropped by 10.65 mph during the PM peak, compared with about 23 mph in Brooklyn and the Bronx. Its speeds were lower both overnight and during peak hours. The street network’s geographic features may have contributed to these lower speeds.
 
-Third,congestion doesn't just disappear after one moment. In other words, it persists over time. The correlation between current speed and speed 30 minutes later was still 0.896. This shows temporal persistence, not congestion propagation between vehicles or segments. However, this phenomenon creates a real challenge for any model I'd want to build later. Since persistence already explains most of what happens 30 minutes out, a new model can't just be "pretty good" — it has to clearly beat that simple "it'll probably look like it does right now" guess to actually justify the added complexity.
+Third, congestion doesn't just disappear after one moment. In other words, it persists over time. The correlation between current speed and speed 30 minutes later was still 0.896. This shows temporal persistence, not congestion propagation between vehicles or segments. However, this phenomenon creates a real challenge for any model I'd want to build later. Since persistence already explains most of what happens 30 minutes out, a new model can't just be "pretty good" — it has to clearly beat that simple "it'll probably look like it does right now" guess to actually justify the added complexity.
 
 Fourth, I trained XGBoost on 2024 and tested it on January-March 2025.
 
@@ -95,6 +96,10 @@ Sixth, I tested whether persistence was really the toughest baseline out there, 
 At the 30-minute horizon, the “same time yesterday” baseline had an RMSE of 12.2, compared with 8.6 for persistence. I expected yesterday’s traffic to be useful because of daily patterns, but using the current speed gave better predictions. Differences between weekdays and weekends may have contributed to this result. The feature importance also showed that the current speed and the 10-minute lag were more important than lag_1d.
 Prediction errors were lower during peak hours (AM 6–9 / PM 15–19) than off-peak hours. This was unexpected, since I thought heavy traffic would be harder to predict. Recurring rush-hour patterns may have made prediction easier, though I did not test that explanation directly.
 
-6. Reflection
+<div class="reflection" markdown="1">
+
+### 6. Reflection
 
 I realized that heavy traffic can sometimes be easier to predict because it follows recurring patterns, while other factors may make off-peak speeds less predictable. I also learned that sensor reliability should be evaluated through data analysis rather than assumptions about how congested an area is.
+
+</div>
