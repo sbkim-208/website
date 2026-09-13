@@ -16,43 +16,27 @@ I built an interactive graph-algorithm simulator over a ~50-station Seoul subway
 
 <img src="{{ '/assets/img/projects/seoul-graph-routing.gif' | relative_url }}" alt="A* search animating over the Seoul subway graph, then an algorithm-comparison table" style="max-width:100%;">
 
-A* searching Gangnam → Hapjeong on the Seoul subway graph — frontier nodes shown with their f-scores as the search expands, followed by the built-in comparison table across all five algorithms.
-
 ### 2. Problem
 
-I wanted to sharpen my interview-ready understanding of search algorithms on a real transportation network — not just implement BFS/DFS/Dijkstra/A*, but be able to say precisely why one beats another and by how much, on an actual graph instead of a whiteboard example.
+I wanted to sharpen my understanding of search algorithms on a real transportation network, not just implement BFS, DFS, Dijkstra, and A*, but actually be able to say why one beats another and by how much, on a real graph instead of a whiteboard example.
 
 ### 3. Goals
 
-I wanted every algorithm to share one interface, so adding a new one later wouldn't mean touching the frontend at all. And I didn't want to just assume A* would win because it's supposed to — I wanted to actually measure the payoff of each design decision I made, on the real ~50-station graph, not a toy one.
+I wanted every algorithm to share one interface, so adding a new one later wouldn't mean touching the frontend at all. And I didn't want to just assume A* would win because it's supposed to. I wanted to actually measure the payoff of each design decision, on the real ~50-station graph, not a toy one.
 
 ### 4. Process
 
-Before writing `a_star.py` I considered a shortcut: precompute minimum transfer-to-transfer costs with Dijkstra once, then reuse that table as A*'s `h(n)` for every query. Working through it, I realized that table only lower-bounds the remaining cost for the specific pairs it was computed on — reusing it for an arbitrary query isn't automatically admissible, and an inadmissible heuristic silently breaks A*'s optimality guarantee. I used straight-line distance instead, which is a safe lower bound given travel-time-like edge weights and needs no precomputation at all.
+Before writing `a_star.py` I looked at a shortcut: precompute costs with Dijkstra once and reuse that table as A*'s heuristic. It turned out that isn't safe for an arbitrary query, since the table only lower-bounds the cost for the specific pairs it was built from, so I used straight-line distance instead, which needs no precomputation at all.
 
-I designed every algorithm to implement the same interface and yield `Step` frames, the one animation primitive the frontend needs to render any algorithm without knowing which one it is:
+Every algorithm shares one interface and streams step-by-step frames, so the frontend can render any of them without knowing which one it is. A new algorithm gets auto-discovered at startup, which is how I added A* later without touching the frontend at all.
 
-```python
-@dataclass
-class Step:
-    iteration: int
-    current: NodeId | None          # node currently being processed
-    frontier: list[NodeId]          # nodes in queue / heap
-    visited: list[NodeId]           # settled nodes
-    distances: dict[NodeId, float]
-    parent: dict[NodeId, NodeId]
-    note: str                       # human-readable description
-    done: bool
-    path: list[NodeId]              # set when done
-```
+The placeholder styling that looked fine on small demo graphs broke once I loaded the real ~50-station graph. Labels overlapped and were hard to read, so I fixed the font, label size, node colors, and layout spacing until it held up.
 
-`core/registry.py` imports every module under `app/algorithms/` at startup, so a new algorithm shows up through `/algorithms` and the frontend dropdown automatically. That's the exact path I used to add A* after the first three algorithms were already running — no client-side changes needed.
-
-The placeholder styling that looked fine on 8-node grid demos broke the moment I loaded the real ~50-station subway graph — labels overlapped and had too little contrast to read at a glance. I fixed that end to end: switched the font to Pretendard Variable for proper Korean + Latin glyph coverage, bumped label size from 11px to 13px, swapped translucent "glass" node backgrounds for solid state-tinted colors, raised edge opacity from 0.3 to 0.7, and scaled the subway layout's coordinates by 1.6× so adjacent stations stop crowding each other.
+Backend is FastAPI + WebSocket, frontend is React + TypeScript with React Flow for the graph canvas. `/eval` runs every algorithm on the same start/goal and compares them; `/ws/run` streams a single run. Algorithms: BFS, DFS, Dijkstra, and A*, plus a few more I added while working through the session's homework problems against the same interface (Number of Islands, Course Schedule, Shortest Path in Binary Matrix, Network Delay Time).
 
 ### 5. Result
 
-I ran all five algorithms on the same Gangnam → Hapjeong route through `/eval`, specifically to check the A* payoff was real and not just assumed:
+I ran all five algorithms on the same Gangnam → Hapjeong route through `/eval`, to check the A* payoff was real and not just assumed:
 
 | Algorithm | Hops | Total Cost | Nodes Visited | Iterations |
 |---|---:|---:|---:|---:|
@@ -61,25 +45,4 @@ I ran all five algorithms on the same Gangnam → Hapjeong route through `/eval`
 | BFS | 6 | 26 | 27 | 27 |
 | Dijkstra | 6 | 26 | 40 | 40 |
 
-All four reach the same optimal cost (26) and hop count (6) — there's no shortcut past these transfers — but they get there having looked at very different amounts of the graph. A* reaches it having visited only 7 of the ~50 stations, against Dijkstra's 40, because its heuristic keeps pulling the search toward Hapjeong instead of expanding outward in every direction evenly — the heuristic decision above actually paying off, measured rather than assumed. I don't think DFS's 25 means much beyond this one route, though — it's probably just this route's neighbor-list ordering happening to point roughly the right way, since nothing in DFS actually biases it toward the goal the way A*'s heuristic does.
-
-### Architecture
-
-| Layer           | Choice                                               |
-| --------------- | ----------------------------------------------------- |
-| Backend         | FastAPI + WebSocket (async step streaming)           |
-| Frontend        | Vite + React + TypeScript                            |
-| Graph rendering | React Flow (node/edge primitives, MiniMap, pan/zoom) |
-| State           | Zustand                                              |
-
-| Method | Path             | Purpose                                                         |
-| ------ | ---------------- | ----------------------------------------------------------------- |
-| `GET`  | `/algorithms`    | List registered algorithms                                      |
-| `GET`  | `/graphs`        | List datasets                                                   |
-| `GET`  | `/graphs/{name}` | Load a dataset's nodes + edges + layout                         |
-| `POST` | `/eval`          | Run every algorithm on the same start/goal, return a comparison |
-| `WS`   | `/ws/run`        | Stream `Step` frames for a single algorithm run                 |
-
-Also registered, built while working through the session's LeetCode-style homework problems against the same `Step` contract: Number of Islands (`island_dfs`), Course Schedule (`dfs_topo`, cycle detection via topological sort), Shortest Path in Binary Matrix (`bfs_binary_matrix`, 8-directional), and Network Delay Time (`dijkstra_network_delay`), each with its own dataset (grids, a small dependency DAG, a weighted digraph).
-
-I color each `Step` on the canvas as it streams in — gray (unvisited) → yellow (frontier, labeled with its running cost/score) → red (current) → green (visited) — with the final path drawn in blue with animated edges, so a search that's normally invisible inside a call stack is something anyone can actually watch happen, one settled node at a time. Backend correctness is checked with `pytest` smoke tests.
+All four reach the same optimal cost and hop count, so there's no shortcut past these transfers, but they get there having looked at very different amounts of the graph. A* visited only 7 of the ~50 stations, against Dijkstra's 40, because the heuristic keeps pulling the search toward Hapjeong instead of expanding outward evenly. I don't think DFS's 25 means much beyond this one route though. It's probably just this route's neighbor-list ordering happening to point roughly the right way, since nothing in DFS actually biases it toward the goal.
