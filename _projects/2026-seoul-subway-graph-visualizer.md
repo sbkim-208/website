@@ -46,3 +46,11 @@ I ran all five algorithms on the same Gangnam → Hapjeong route through `/eval`
 | Dijkstra | 6 | 26 | 40 | 40 |
 
 All four reach the same optimal cost and hop count, so there's no shortcut past these transfers, but they get there having looked at very different amounts of the graph. A* visited only 7 of the ~50 stations, against Dijkstra's 40, because the heuristic keeps pulling the search toward Hapjeong instead of expanding outward evenly. I don't think DFS's 25 means much beyond this one route though. It's probably just this route's neighbor-list ordering happening to point roughly the right way, since nothing in DFS actually biases it toward the goal.
+
+<div class="reflection" markdown="1">
+
+### 6. Reflection
+
+I realized that a heuristic is only as good as the guarantee behind it. It was tempting to reuse a precomputed cost table because it looked like free performance, and I only avoided that mistake by working through whether it was actually admissible first. I also learned that a design choice isn't proven until it's measured on the real graph, not the small demo one.
+
+</div>

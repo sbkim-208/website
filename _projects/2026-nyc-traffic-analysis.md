@@ -68,12 +68,12 @@ Fourth, I trained XGBoost on 2024 and tested it on January-March 2025.
 | Naive (persistence)     | 5.994 | 9.881 | 0.658 |
 | XGBoost (year-crossing) | 5.119 | 7.945 | 0.769 |
 
-XGBoost outperformed Niave Model, reducing RMSE from 9.881 to 7.945 on the2025 test data. 
+XGBoost outperformed the naive model, reducing RMSE from 9.881 to 7.945 on the 2025 test data.
+
 <img src="{{ '/assets/img/projects/nyc-traffic-year-over-year-performance.png' | relative_url }}" alt="Predicted vs actual, residual distribution, and monthly performance" style="max-width:100%;">
 
-In the left plot, the model tended to predict higher speeds when acutal speeds were low. This means that it understimates how bad real congestion was. Although it performed better overall than basic model, it still needs improvement during heavy congestion. 
+In the left plot, the model tended to predict higher speeds when actual speeds were low. This means that it underestimates how bad real congestion was. Although it performed better overall than the naive model, it still needs improvement during heavy congestion.
 
- 
 Fifth, I checked the 60-minute forecast horizon in more detail. The original lag analysis went straight from 30 minutes to one day, so I added the intervals in between. The correlation decreased gradually as the time gap increased.
 
 | Lag (min) | 30 | 45 | 60 | 90 | 120 |
@@ -86,12 +86,9 @@ Then, I compared 30-minute and 60-minute forecasts by borough.
 
 The 30 minutes had lower RMSE in all five boroughs, with reductions of 8–15%. It was more accurate, although the 60-minute model provided more advance notice.
 
-
 Sixth, I tested whether persistence was really the toughest baseline out there, and pulled feature importance to see what the model was actually leaning on:
 
 <img src="{{ '/assets/img/projects/nyc-traffic-report-extras.png' | relative_url }}" alt="Feature importance, baseline comparison, and peak vs off-peak error" style="max-width:100%;">
-
-
 
 At the 30-minute horizon, the “same time yesterday” baseline had an RMSE of 12.2, compared with 8.6 for persistence. I expected yesterday’s traffic to be useful because of daily patterns, but using the current speed gave better predictions. Differences between weekdays and weekends may have contributed to this result. The feature importance also showed that the current speed and the 10-minute lag were more important than lag_1d.
 Prediction errors were lower during peak hours (AM 6–9 / PM 15–19) than off-peak hours. This was unexpected, since I thought heavy traffic would be harder to predict. Recurring rush-hour patterns may have made prediction easier, though I did not test that explanation directly.

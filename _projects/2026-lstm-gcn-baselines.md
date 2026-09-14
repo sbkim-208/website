@@ -53,3 +53,11 @@ Second, on the node task, it went the other way:
 The MLP did worse than just predicting the mean, since it can't see neighbor information at all. The GCN propagates it through the normalized adjacency matrix and fits well.
 
 RF beat the LSTM because its lag features already captured the sequence dependence a small model couldn't learn on its own. The GCN beat the MLP because neighbor structure was the only thing that could explain the target in the first place. Knowing which case I was in before picking a model was really the point of both experiments.
+
+<div class="reflection" markdown="1">
+
+### 6. Reflection
+
+I realized that a more complex architecture doesn't automatically win. It only helps when it actually matches how the underlying data is structured, and it can lose badly when it doesn't. I also learned that a capacity sweep is a cheap way to rule out "it just needs to be bigger" before concluding a model is genuinely the wrong tool.
+
+</div>

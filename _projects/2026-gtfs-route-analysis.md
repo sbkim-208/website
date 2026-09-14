@@ -30,3 +30,11 @@ I joined `stop_times` with `trips` to attach `route_id` to each stop time, then 
 | R70      | Downtown ↔ Northgate     | 6       |
 
 That's as far as I've gotten. The distance/spacing/map/walkshed parts are still scaffolded, not implemented.
+
+<div class="reflection" markdown="1">
+
+### 6. Reflection
+
+I realized a GTFS feed looks complete but isn't usable until you actually do the joins yourself. Even a basic fact like stop count per route took deciding which tables to combine and how, and that step is easy to underestimate before you've done it once.
+
+</div>
