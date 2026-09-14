@@ -50,6 +50,14 @@ One thing I got wrong on the way: my first baseline used a single conflict box p
 
 ### 5. Result
 
+Three things came out of the comparison.
+
+**FIFO is fine at low density, but it isn't better.** With the paper's model, FIFO and MCTS land within noise of each other at 8 veh/min (1.4–2.0 s vs. 1.7 s). What FIFO has going for it is that it's free: no search, and the order is completely predictable. The version of FIFO that *did* beat MCTS at low load was my old baseline, and it only won because its lane gap was tighter than the paper's Δ.
+
+**MCTS wins once the intersection gets dense.** At 24 veh/min it moves 26 veh/min through with 6.8 s average delay, against FIFO's 16 veh/min and 8.1 s. The reason is simple: it reorders cars across directions to fill gaps that FIFO leaves empty. At low density there are no gaps to fill, so there's nothing to win.
+
+**My extension has more safety margin, not a better safety score.** All three had zero violations in these runs, so I can't claim it's safer from the numbers. What it does have is a larger margin (its minimum gap under load was 2.9 m vs. 2.0 m for MCTS, and it books longer slots for cars restarting from a stop) and a safety mechanism that doesn't depend on the prediction: a car that misses its window is held at the line instead of entering late. Whether that turns into fewer violations under harder conditions is the test I still need to run.
+
 Each one has a clear trade-off:
 
 | Algorithm        | Pros                                                                                                   | Cons                                                                                                           |
