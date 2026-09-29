@@ -3,7 +3,7 @@ title: "NYC Traffic Analysis: Can Congestion Be Warned About in Advance?"
 category: other # not "research" -> appears under "Other Projects"
 year: 2026
 summary: "A commuting experience led me to test congestion warnings on NYC’s FDR Drive. I corrected time and missing-data issues, compared prediction and alert rules, and closed this phase with clear limits and next steps."
-thumbnail: /assets/img/projects/nyc-traffic-congestion-sensor-map.jpg
+thumbnail: /assets/img/projects/nyc-fdr-prediction-progress.png
 hide_hero: true
 links:
     - name: Code
@@ -20,7 +20,7 @@ I started looking at NYC traffic data to see whether an early warning system was
 
 The reference model detected 398 of 1,045 evaluated congestion events in advance, or 38.1%. Only 23.2% were detected at least 10 minutes ahead. That was enough to make the idea worth investigating, but it did not establish that the system would help someone avoid being late.
 
-**I'm wrapping up this phase here.** The latest alert rule reduced useful warnings, so I kept the earlier approach as the comparison baseline. The results below explain what worked, what did not, and what I would need to check before taking it further.
+**I'm wrapping up this phase here.** The latest alert rule reduced useful warnings, so I kept the earlier approach as the comparison baseline. The four result figures below show how the prediction question changed, why higher detection was not enough, and where the remaining failures occurred.
 
 ### 2. Problem
 
@@ -74,19 +74,40 @@ This could release the restriction earlier than 30 minutes if congestion cleared
 
 ### 5. Results and Decisions
 
+*The charts use saved experiment results, not illustrative data. Select a chart to open a larger image.*
+
 All detection counts below use the same 1,045 evaluated congestion events in 2025. A detection means an issued alert was matched to an upcoming event. One alert was not counted as a success for multiple events; missing observations could leave its outcome unknown.
 
-| Prediction approach | Events warned about in advance | Detection rate |
-| --- | ---: | ---: |
-| Speed exactly 30 minutes ahead, after correcting time alignment | 78 | 7.5% |
-| Speeds at six points over the next 30 minutes | 120 | 11.5% |
-| Direct prediction of congestion onset | 398 | 38.1% |
+
+<figure style="margin: 1.5rem 0;">
+  <a href="{{ '/assets/img/projects/nyc-fdr-prediction-progress.png' | relative_url }}">
+    <img src="{{ '/assets/img/projects/nyc-fdr-prediction-progress.svg' | relative_url }}" alt="Advance detection on 1,045 events: one future speed, 78 events (7.5%); six future speeds, 120 (11.5%); direct onset prediction, 398 (38.1%)." style="display:block;width:100%;height:auto;" loading="lazy">
+  </a>
+  <figcaption>Figure 1. Predicting congestion onset was more useful for this question. The model and training setup also changed, so this comparison does not isolate the effect of changing the target.</figcaption>
+</figure>
+
 
 The direct approach was more useful for this question, but better detection came with more alerts. A later class-weighting experiment detected 558 events, or 53.4%, while increasing false alerts from 190 to 498 and total alerts from 829 to 1,520. I did not adopt it under the experiment's alert-burden constraints. Those constraints were conservative comparison rules, not measured user preferences.
+
+
+<figure style="margin: 1.5rem 0;">
+  <a href="{{ '/assets/img/projects/nyc-fdr-alert-tradeoff.png' | relative_url }}">
+    <img src="{{ '/assets/img/projects/nyc-fdr-alert-tradeoff.svg' | relative_url }}" alt="Reference alerts: 398 matched, 190 false, 241 unknown, 829 total. Weighted model: 558 matched, 498 false, 464 unknown, 1,520 total." style="display:block;width:100%;height:auto;" loading="lazy">
+  </a>
+  <figcaption>Figure 2. The weighted model found 160 more events, but added 308 false alerts and 223 alerts with unknown outcomes. I kept the reference configuration under the study’s burden constraints.</figcaption>
+</figure>
 
 Adding speed-change and neighboring-road inputs also did not produce a replacement that met the selection requirements and improved timely detection in the 2025 evaluation.
 
 #### Waiting for recovery reduced useful warnings
+
+
+<figure style="margin: 1.5rem 0;">
+  <a href="{{ '/assets/img/projects/nyc-fdr-recovery-rules.png' | relative_url }}">
+    <img src="{{ '/assets/img/projects/nyc-fdr-recovery-rules.svg' | relative_url }}" alt="Overall and at least 10-minute detection: existing rule 38.1% and 23.2%; recovery 5 minutes 34.6% and 20.6%; recovery 10 minutes 27.7% and 17.2%; recovery 15 minutes 24.6% and 16.1%." style="display:block;width:100%;height:auto;" loading="lazy">
+  </a>
+  <figcaption>Figure 3. Waiting longer for recovery reduced both overall detection and warnings with at least 10 minutes to act. The green bars are a subset of the blue bars, not additional detections.</figcaption>
+</figure>
 
 | Alert rule | Advance detection | At least 10 minutes ahead | Total alerts |
 | --- | ---: | ---: | ---: |
@@ -103,11 +124,14 @@ That helped explain why fewer alerts were not automatically an improvement. The 
 
 The reference approach missed 647 events. I separated them by where the warning process broke down:
 
-| Where the opportunity was lost | Events |
-| --- | ---: |
-| No eligible prediction opportunity because required inputs were unavailable | 158 |
-| Model ran, but no alert candidate was produced | 275 |
-| Candidates existed, but did not become a scored detection | 214 |
+
+<figure style="margin: 1.5rem 0;">
+  <a href="{{ '/assets/img/projects/nyc-fdr-missed-events.png' | relative_url }}">
+    <img src="{{ '/assets/img/projects/nyc-fdr-missed-events.svg' | relative_url }}" alt="Of 647 missed events: required inputs unavailable, 158 (24.4%); model ran but no candidate, 275 (42.5%); candidates without scored detection, 214 (33.1%)." style="display:block;width:100%;height:auto;" loading="lazy">
+  </a>
+  <figcaption>Figure 4. Percentages are shares of the 647 missed events. Input availability and candidate generation account for 433 misses that changing the alert-delivery rule alone cannot recover.</figcaption>
+</figure>
+
 
 The last group includes suppression, missing observations, and alert-to-event matching; it cannot all be blamed on the repeat-alert rule. With the current model and score threshold fixed, only 558 events had any scoreable candidate opportunity. Even that is an optimistic ceiling that ignores suppression and competition between events for alerts. Changing delivery rules alone cannot reach 70% detection. This 558-event opportunity count is a diagnostic for the fixed reference model, not the result of the separate class-weighting experiment above, which happened to detect the same number of events.
 
