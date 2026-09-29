@@ -50,40 +50,19 @@ One thing I got wrong on the way: my first baseline used a single conflict box p
 
 ### 5. Result
 
-Three things came out of the comparison.
+**At low load, FIFO and MCTS tie.** At 8 veh/min they land within noise of each other (1.4–2.0 s vs. 1.7 s). With few cars there is no order worth optimizing, and FIFO gets that result for free: no search, and a fully predictable order.
 
-**FIFO is fine at low density, but it isn't better.** With the paper's model, FIFO and MCTS land within noise of each other at 8 veh/min (1.4–2.0 s vs. 1.7 s). What FIFO has going for it is that it's free: no search, and the order is completely predictable. The version of FIFO that *did* beat MCTS at low load was my old baseline, and it only won because its lane gap was tighter than the paper's Δ.
+**At high load, MCTS wins.** At 24 veh/min it moves 26 veh/min through with 6.8 s delay, against FIFO's 16 veh/min and 8.1 s. It reorders cars across directions to fill gaps that FIFO leaves empty.
 
-**MCTS wins once the intersection gets dense.** At 24 veh/min it moves 26 veh/min through with 6.8 s average delay, against FIFO's 16 veh/min and 8.1 s. The reason is simple: it reorders cars across directions to fill gaps that FIFO leaves empty. At low density there are no gaps to fill, so there's nothing to win.
+**My extension is the slowest everywhere, but not for the reason I expected.** The case it was built for, cars restarting from a stop, turns out to be mild at this simulator's acceleration limit, so there was little for the more honest model to correct, while its extra margins cost throughput. All three had zero violations, so I can't claim it's safer from the numbers. What it does have is a larger margin (minimum gap 2.9 m vs. 2.0 m under load) and a failure mode that doesn't depend on the prediction being right: a car that misses its window by more than 0.5 s is held at the stop line and rescheduled instead of entering late. Whether that turns into fewer violations under harder conditions (lower acceleration, longer crossing, communication delay) is the stress test I still need to run.
 
-**My extension has more safety margin, not a better safety score.** All three had zero violations in these runs, so I can't claim it's safer from the numbers. What it does have is a larger margin (its minimum gap under load was 2.9 m vs. 2.0 m for MCTS, and it books longer slots for cars restarting from a stop) and a safety mechanism that doesn't depend on the prediction: a car that misses its window is held at the line instead of entering late. Whether that turns into fewer violations under harder conditions is the test I still need to run.
+| Algorithm        | Pros                                                                                   | Cons                                                                                                  |
+| ---------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `algo_fcfs`      | Zero search cost, fully predictable, matches MCTS when traffic is light.               | Never reorders across directions, so throughput caps early once conflicts pile up.                    |
+| `algo_mcts_heur` | Best delay and throughput under load.                                                  | Assumes every car crosses at v0, and nothing checks whether a car actually made its slot.             |
+| `algo_mcts_ad`   | Slot times match what the car will physically do. Safety is enforced at the stop line. | Slowest in every condition measured. The case it fixes barely shows up at this simulator's acceleration. |
 
-Each one has a clear trade-off:
-
-| Algorithm        | Pros                                                                                                   | Cons                                                                                                           |
-| ---------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
-| `algo_fcfs`      | Zero search cost, fully predictable order, matches MCTS when traffic is light.                         | Never reorders across directions, so once conflicts pile up it just queues them. Throughput caps early.        |
-| `algo_mcts_heur` | Best delay and throughput under load. Reorders vehicles across directions to fill gaps FIFO leaves.    | Assumes every car crosses at v0. Its slot promises are optimistic for a car restarting from a stop, and nothing checks whether a car actually made its slot. |
-| `algo_mcts_ad`   | Only one whose slot times match what the car will physically do. Safety is enforced at the stop line, not by hoping the prediction was right. | Slowest in every condition I measured. Its extra margins cost throughput, and the case it fixes barely shows up at this simulator's acceleration. |
-
-My own extension is the slowest one in every condition I tried. That surprised me, but it makes sense: the situation it was built for, cars restarting slowly from a stop, turns out to be mild at this simulator's acceleration limit, so there wasn't much for the more honest model to correct. Meanwhile the extra safety margins it adds cost throughput.
-
-Still, I think it's the more realistic and the more stable of the three, for two reasons.
-
-It's more realistic because it's the only one that models both halves of the trip with actual vehicle physics. `algo_mcts_heur` already predicts *when* a car reaches the intersection using its current speed and acceleration limit, but once the car is inside it assumes constant v0, so a car that's still accelerating gets the same crossing time as one that never slowed down. `algo_mcts_ad` predicts the entry speed and computes the crossing time from that, so a car that stopped gets a longer slot and a car that never stopped gets a shorter one. Its `t1` is what the car will actually do, not what the paper assumed.
-
-It's more stable because it doesn't rely on that prediction being perfect. With `algo_mcts_heur`, if a car arrives late, it just enters late, and whether that overlaps with someone else is left to chance and the next replan. With `algo_mcts_ad`, a car that misses its window by more than 0.5 s is held at the line and gets a new slot on the next replan. The failure mode changes from "possible conflict" to "wait a bit," and the missed-slot counter tells me how often the prediction was off. It also freezes slots that are about to start, so a stopped car's slot can't keep sliding into the future every time the plan is recomputed, which is a loop I actually hit before adding that. None of this shows up as better numbers in the table above. It shows up as the algorithm not breaking when conditions get worse, and I haven't run the stress test (lower acceleration, longer crossing, communication delay) that would demonstrate that yet.
-
-Before settling on these three, I went through several other schedulers (cost-benefit yielding, emergency priority, P2P visibility). They're archived now, but two things I learned from them shaped the final comparison.
-
-First, the yielding rewrite flipped the result completely, same idea, opposite outcome, because the second version measures the actual delay instead of guessing at a proxy for it:
-
-| Algorithm                 | Delay vs. FCFS | Note                          |
-| -------------------------- | -------------- | ------------------------------ |
-| Threshold rule (v1)         | −59% (worse)   | Nearly every request yielded  |
-| Cost-benefit rewrite (v2)   | +28–31%        | Same idea, measures the outcome |
-
-Second, the subzone fix restored the parallel-crossing case the MCTS paper's advantage actually depends on. Without it I would have concluded the paper's algorithm just doesn't help here, which wasn't true. I'd just implemented a version of the intersection where its advantage couldn't exist.
+Before settling on these three, I went through several other schedulers (cost-benefit yielding, emergency priority, P2P visibility). Two lessons from them shaped the final comparison. A threshold-based yielding rule made delay 59% worse than FCFS because nearly every request yielded; rewriting it to measure the actual delay instead of a proxy turned the same idea into a 28–31% improvement. And the subzone fix restored the parallel-crossing case the MCTS paper's advantage depends on. Without it I would have concluded the algorithm just doesn't help here, when really I had built a version of the intersection where its advantage couldn't exist.
 
 <div class="reflection" markdown="1">
 
