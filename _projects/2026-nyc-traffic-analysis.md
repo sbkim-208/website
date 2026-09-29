@@ -1,8 +1,8 @@
 ---
-title: "NYC Traffic Data Analysis"
+title: "NYC Traffic Analysis: Can Congestion Be Warned About in Advance?"
 category: other # not "research" -> appears under "Other Projects"
 year: 2026
-summary: "Reliability and congestion analysis of 4.2M NYC DOT traffic sensor readings across 5 boroughs, extended into a year-crossing XGBoost speed forecaster stress-tested against real baselines, boroughs, and horizons."
+summary: "A commuting experience led me to test congestion warnings on NYC’s FDR Drive. I corrected time and missing-data issues, compared prediction and alert rules, and closed this phase with clear limits and next steps."
 thumbnail: /assets/img/projects/nyc-traffic-congestion-sensor-map.jpg
 hide_hero: true
 links:
@@ -12,91 +12,134 @@ links:
 
 ### 1. Overview
 
-I analyzed 4,233,169 rows of NYC DOT Traffic Speeds sensor data, from 2024-04-01 to 2024-08-01, to see how reliable the sensors actually are and how congestion really plays out across the five boroughs — then used that to test whether congestion could be predicted, and later extended it into a full year-crossing forecasting model.
+*Status: This research phase is complete. The warning system has been evaluated offline and has not been deployed.*
 
-<iframe src="{{ '/assets/interactive/congestion_error_map.html' | relative_url }}" width="100%" height="600" style="border:0;"></iframe>
+When I was commuting to work, I chose a route without realizing how bad the traffic ahead would become and ended up late. That experience stayed with me. If I had known earlier, could I have made a different choice?
+
+I started looking at NYC traffic data to see whether an early warning system was something I could actually build. The project began with sensor reliability across the five boroughs, then narrowed to two northbound segments of the FDR Drive. My question became: **when a road is still flowing, can I warn that congestion will start within the next 30 minutes?**
+
+The reference model detected 398 of 1,045 evaluated congestion events in advance, or 38.1%. Only 23.2% were detected at least 10 minutes ahead. That was enough to make the idea worth investigating, but it did not establish that the system would help someone avoid being late.
+
+**I'm wrapping up this phase here.** The latest alert rule reduced useful warnings, so I kept the earlier approach as the comparison baseline. The results below explain what worked, what did not, and what I would need to check before taking it further.
 
 ### 2. Problem
 
-NYC's traffic is often called the most congested in the U.S. I wanted to see whether that congestion could be predicted well enough to find real solutions. But before I could get into any analysis or prediction, I realized I had to ask a more basic question first: could I even trust the sensor data I'd be working with?
+Knowing that a road is already congested is different from knowing early enough to reconsider a route. I wanted to study the second problem.
+
+I could not test that whole commuting decision with road speeds alone. I did not have individual journeys, alternative routes, or arrival deadlines. Instead, I tested one part of a possible system: whether observed speeds could give advance notice of congestion on a road segment.
+
+For this study, a congestion event begins when a segment changes from flowing to below its congestion-speed threshold. It is a road-state transition, not a record of someone arriving late. A brief recovery followed by another slowdown counts as a new event under this definition.
 
 ### 3. Goals
 
-My first goal was to check whether the areas assumed to be the most congested (Manhattan) actually were, and whether those same areas also had higher sensor error rates. Before testing machine learning or deep learning, I needed to know the data could be trusted, even in the most congested spots. In the end, the goal was to find out whether accurate prediction was something I could actually pull off in a realistic way.
+I wanted to answer three questions:
+
+- Could I trust the timestamps and missing-data handling enough to evaluate a forecast fairly?
+- Could I identify new congestion while the road was still flowing, with time to act?
+- Could I limit repeated alerts without blocking useful warnings?
+
+I evaluated both warnings issued 5–30 minutes before an event and the more demanding case of at least 10 minutes' notice. The latter became the main measure in the follow-up experiments. Ten minutes was a research setting; I have not checked whether it is enough for a real commuter to change plans.
 
 ### 4. Process
 
-I measured reliability by borough as the percentage of records where status was not -101. I removed segments with no valid readings, filled missing values using time-based interpolation while leaving status unchanged, and checked for values that stayed constant despite a valid status.
+#### First, I checked the data
 
-Peak-hour speeds were compared with each segment’s overnight free-flow speed. Lag correlations helped assess persistence as a forecasting baseline.
-I later extended the analysis to 2024–Q1 2025, training XGBoost on 2024 and testing on Q1 2025. Evaluation covered 30- and 60-minute forecasts, persistence and “same time yesterday” baselines, and errors by borough and time of day.
+The initial analysis covered 4,233,169 NYC DOT sensor records from April through July 2024. Reliability, measured as the share of records without the error status `-101`, varied considerably: 93.4% in Queens versus 56.3% in Manhattan. That made data availability part of the prediction problem from the start.
 
-### 5. Result
+<img src="{{ '/assets/img/projects/nyc-traffic-borough-reliability.png' | relative_url }}" alt="Valid sensor record share by borough: Queens 93.4%, Bronx 83.7%, Staten Island 65.1%, Brooklyn 62.1%, and Manhattan 56.3%." style="max-width:100%;" loading="lazy">
 
-First, Queens had the highest reliability at 93.4%, while Manhattan had the lowest at 56.3%.
+The early exploration included interpolation, but the later warning evaluation treated missing future observations as unknown rather than filling them in to create answers.
 
-| Borough       | Total rows | Error rate | Reliability |
-| ------------- | ---------- | ---------- | ----------- |
-| Manhattan     | 904,947    | 43.70%     | 56.3%       |
-| Brooklyn      | 370,312    | 37.88%     | 62.1%       |
-| Staten Island | 871,438    | 34.94%     | 65.1%       |
-| Bronx         | 798,345    | 16.33%     | 83.7%       |
-| Queens        | 1,288,127  | 6.64%      | 93.4%       |
+I also found a time-alignment problem. Moving six records forward only means 30 minutes ahead if every record is exactly five minutes apart. When records are missing, it can point much further into the future. I changed the evaluation to match actual timestamps. A 9:00 prediction needed a 9:30 observation, not whichever value happened to be six rows later.
 
-<img src="{{ '/assets/img/projects/nyc-traffic-borough-reliability.png' | relative_url }}" alt="Sensor reliability by borough" style="max-width:100%;">
+Missing inputs and missing answers needed separate treatment too. If the required past observations were unavailable, the model might not run. If future observations were unavailable, an alert might still be issued but could not be scored. Dropping both cases would hide how often the system could actually be used.
 
-Error rates were lowest during rush hour and highest overnight, contrary to my expectation that errors would be more common during heavy traffic.
+#### Then, I changed the prediction question
 
-Second, I compared peak-hour speeds with each borough's overnight free-flow speed. 
+For the FDR warning study, my first approach predicted speed exactly 30 minutes ahead. But a road could become congested after 10 minutes and recover before the 30-minute mark. A good prediction of the final speed could still miss the event I cared about.
 
-| Borough       | Free-flow, mph | PM peak, mph | Absolute drop |
-| ------------- | -------------- | ------------ | ------------- |
-| Manhattan     | 25.90          | 15.25        | **10.65**     |
-| Staten Island | 55.78          | 41.54        | 14.24         |
-| Queens        | 47.24          | 28.24        | 19.00         |
-| Brooklyn      | 47.15          | 24.51        | 22.64         |
-| Bronx         | 48.03          | 25.08        | 22.95         |
+I compared forecasts at six future times, then trained models to predict whether congestion would start anywhere within the next 30 minutes. I tested logistic regression, random forest, and XGBoost with four settings each. A random forest became the reference model.
 
-Manhattan’s speed dropped by 10.65 mph during the PM peak, compared with about 23 mph in Brooklyn and the Bronx. Its speeds were lower both overnight and during peak hours. The street network’s geographic features may have contributed to these lower speeds.
+For the onset experiments, I trained on 2023 data and used 2024 to compare candidates and save the selection before evaluating 2025. However, I had already inspected 2025 in earlier work, so these are exploratory results rather than a final untouched test. The target, model, and training setup changed together; I cannot attribute the improvement to the target alone.
 
-Third, congestion doesn't just disappear after one moment. In other words, it persists over time. The correlation between current speed and speed 30 minutes later was still 0.896. This shows temporal persistence, not congestion propagation between vehicles or segments. However, this phenomenon creates a real challenge for any model I'd want to build later. Since persistence already explains most of what happens 30 minutes out, a new model can't just be "pretty good" — it has to clearly beat that simple "it'll probably look like it does right now" guess to actually justify the added complexity.
+#### Finally, I separated prediction from alert delivery
 
-Fourth, I trained XGBoost on 2024 and tested it on January-March 2025.
+Every five minutes, the model checks a currently flowing road if the required inputs are available. A score of at least 0.5 creates an alert candidate. This score is not a calibrated 50% probability. The alert rule then decides whether to issue it.
 
-| Model                   | MAE   | RMSE  | R²    |
-| ----------------------- | ----- | ----- | ----- |
-| Naive (persistence)     | 5.994 | 9.881 | 0.658 |
-| XGBoost (year-crossing) | 5.119 | 7.945 | 0.769 |
+There are two separate clocks: the **30-minute prediction window** looks ahead for congestion, while the **30-minute suppression period** limits repeat alerts after a warning. They happen to have the same length here, but they serve different purposes.
 
-XGBoost outperformed the naive model, reducing RMSE from 9.881 to 7.945 on the 2025 test data.
+I held the model and score threshold fixed while testing a different rule: after observing congestion, wait for 5, 10, or 15 minutes of continuous recovery before allowing another warning. Five minutes of recovery requires two flowing observations five minutes apart. Missing observations break that sequence.
 
-<img src="{{ '/assets/img/projects/nyc-traffic-year-over-year-performance.png' | relative_url }}" alt="Predicted vs actual, residual distribution, and monthly performance" style="max-width:100%;">
+This could release the restriction earlier than 30 minutes if congestion cleared quickly, but it could also keep alerts blocked longer while waiting for recovery. If no congestion had been observed after an alert, the new rule required both 30 minutes to pass and continuous recovery to be confirmed before releasing the restriction.
 
-In the left plot, the model tended to predict higher speeds when actual speeds were low. This means that it underestimates how bad real congestion was. Although it performed better overall than the naive model, it still needs improvement during heavy congestion.
+### 5. Results and Decisions
 
-Fifth, I checked the 60-minute forecast horizon in more detail. The original lag analysis went straight from 30 minutes to one day, so I added the intervals in between. The correlation decreased gradually as the time gap increased.
+All detection counts below use the same 1,045 evaluated congestion events in 2025. A detection means an issued alert was matched to an upcoming event. One alert was not counted as a success for multiple events; missing observations could leave its outcome unknown.
 
-| Lag (min) | 30 | 45 | 60 | 90 | 120 |
-| --- | --- | --- | --- | --- | --- |
-| Correlation | 0.77 | 0.72 | 0.68 | 0.60 | 0.53 |
+| Prediction approach | Events warned about in advance | Detection rate |
+| --- | ---: | ---: |
+| Speed exactly 30 minutes ahead, after correcting time alignment | 78 | 7.5% |
+| Speeds at six points over the next 30 minutes | 120 | 11.5% |
+| Direct prediction of congestion onset | 398 | 38.1% |
 
-Then, I compared 30-minute and 60-minute forecasts by borough.
+The direct approach was more useful for this question, but better detection came with more alerts. A later class-weighting experiment detected 558 events, or 53.4%, while increasing false alerts from 190 to 498 and total alerts from 829 to 1,520. I did not adopt it under the experiment's alert-burden constraints. Those constraints were conservative comparison rules, not measured user preferences.
 
-<img src="{{ '/assets/img/projects/nyc-traffic-horizon-borough-comparison.png' | relative_url }}" alt="Lag correlation curve and 30min vs 60min RMSE by borough" style="max-width:100%;">
+Adding speed-change and neighboring-road inputs also did not produce a replacement that met the selection requirements and improved timely detection in the 2025 evaluation.
 
-The 30 minutes had lower RMSE in all five boroughs, with reductions of 8–15%. It was more accurate, although the 60-minute model provided more advance notice.
+#### Waiting for recovery reduced useful warnings
 
-Sixth, I tested whether persistence was really the toughest baseline out there, and pulled feature importance to see what the model was actually leaning on:
+| Alert rule | Advance detection | At least 10 minutes ahead | Total alerts |
+| --- | ---: | ---: | ---: |
+| Existing 30-minute suppression | 398 · 38.1% | 242 · 23.2% | 829 |
+| Confirm 5 minutes of recovery | 362 · 34.6% | 215 · 20.6% | 754 |
+| Confirm 10 minutes of recovery | 289 · 27.7% | 180 · 17.2% | 644 |
+| Confirm 15 minutes of recovery | 257 · 24.6% | 168 · 16.1% | 570 |
 
-<img src="{{ '/assets/img/projects/nyc-traffic-report-extras.png' | relative_url }}" alt="Feature importance, baseline comparison, and peak vs off-peak error" style="max-width:100%;">
+The five-minute rule found 44 events that the existing rule missed, but lost 80 that it previously caught. In all 80 losses, the model still produced a candidate at the earlier successful alert time. The new rule blocked it while waiting for another flowing observation. In 66 cases, congestion returned five minutes later—before recovery could be confirmed.
 
-At the 30-minute horizon, the “same time yesterday” baseline had an RMSE of 12.2, compared with 8.6 for persistence. I expected yesterday’s traffic to be useful because of daily patterns, but using the current speed gave better predictions. Differences between weekdays and weekends may have contributed to this result. The feature importance also showed that the current speed and the 10-minute lag were more important than lag_1d.
-Prediction errors were lower during peak hours (AM 6–9 / PM 15–19) than off-peak hours. This was unexpected, since I thought heavy traffic would be harder to predict. Recurring rush-hour patterns may have made prediction easier, though I did not test that explanation directly.
+That helped explain why fewer alerts were not automatically an improvement. The model had identified risk, but the delivery rule stopped the warning. **I kept the existing 30-minute rule.**
+
+#### The remaining failures were not all model failures
+
+The reference approach missed 647 events. I separated them by where the warning process broke down:
+
+| Where the opportunity was lost | Events |
+| --- | ---: |
+| No eligible prediction opportunity because required inputs were unavailable | 158 |
+| Model ran, but no alert candidate was produced | 275 |
+| Candidates existed, but did not become a scored detection | 214 |
+
+The last group includes suppression, missing observations, and alert-to-event matching; it cannot all be blamed on the repeat-alert rule. With the current model and score threshold fixed, only 558 events had any scoreable candidate opportunity. Even that is an optimistic ceiling that ignores suppression and competition between events for alerts. Changing delivery rules alone cannot reach 70% detection. This 558-event opportunity count is a diagnostic for the fixed reference model, not the result of the separate class-weighting experiment above, which happened to detect the same number of events.
+
+### 6. Limitations
+
+- **The study covers two FDR segments.** It does not establish performance across NYC, other roads, or rail services.
+- **The evaluation period has been inspected repeatedly.** A new period is needed before claiming that improvements generalize.
+- **Some alerts cannot be judged.** Of the reference system's 829 alerts, 190 were false alerts and 241 had insufficient observations to score. The 32.3% false-alert rate applies only to the 588 scoreable alerts.
+- **An event is not the same as a commuter's experience.** Brief flowing intervals split congestion into separate events here. Whether those should count as one continuing disruption needs further study.
+- **This was an offline evaluation.** Actual data delivery delays, route changes, notification fatigue, travel-time savings, and reduced lateness were not measured. Passing code tests does not establish those outcomes.
+
+### 7. Where I'm Stopping, and What Comes Next
+
+I'm keeping the random forest, score threshold of 0.5, and 30-minute suppression as the reference configuration and closing this phase of the project. I have enough evidence to explain why the recovery rules were not adopted. Continuing to change rules on the same data would not resolve the bigger question of whether this works in a new period or helps a commuter.
+
+If I return to the project, I would prioritize:
+
+1. **A new evaluation period.** Freeze the model and alert rule, check when observations actually become available, and evaluate without sending live notifications.
+2. **The missing-input cases.** Find which required observations prevent predictions, then test whether a smaller-input model can recover useful opportunities.
+3. **One bounded alert-rule experiment.** Allow early release after confirmed recovery, but release after 30 minutes even without it. This has not been tested, and earlier alerts could change later suppression, so improvement is not guaranteed.
+4. **The original commuting question.** Identify when a warning would still allow a different route and what alert burden users would accept. Alternative-route and journey data would be needed to measure whether warnings actually help.
+
+I would also like to explore whether earlier passenger-facing rail disruption information could support similar travel decisions. That would require a separate dataset, a definition of disruption, and a review of what information passengers already receive.
 
 <div class="reflection" markdown="1">
 
-### 6. Reflection
+### 8. Reflection
 
-I realized that heavy traffic can sometimes be easier to predict because it follows recurring patterns, while other factors may make off-peak speeds less predictable. I also learned that sensor reliability should be evaluated through data analysis rather than assumptions about how congested an area is.
+I started because I wanted information that might have helped me avoid a bad route choice. I expected most of the work to be about predicting traffic. In practice, a lot of it came down to deciding what counted as a useful warning, checking that time and missing data were handled correctly, and understanding why a prediction did not turn into an alert.
+
+The most useful result was not always a higher detection rate. Finding that a reasonable-looking recovery rule blocked warnings gave me a clearer reason to keep the simpler approach. I have not built a system that can promise to prevent late arrivals, but I now have a more concrete understanding of what would need to work before making that claim.
 
 </div>
+
+*This page summarizes experiments completed through September 29, 2026. The latest recovery-rule experiment and loss diagnosis are recorded under `20260929T054130Z` in the project repository.*
