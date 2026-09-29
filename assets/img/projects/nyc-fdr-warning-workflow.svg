@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+  "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg xmlns:xlink="http://www.w3.org/1999/xlink" width="792pt" height="583.2pt" viewBox="0 0 792 583.2" xmlns="http://www.w3.org/2000/svg" version="1.1">
+ <metadata>
+  <rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+   <cc:Work>
+    <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+    <dc:date>2026-09-29T15:17:19.453638</dc:date>
+    <dc:format>image/svg+xml</dc:format>
+    <dc:creator>
+     <cc:Agent>
+      <dc:title>Matplotlib v3.10.9, https://matplotlib.org/</dc:title>
+     </cc:Agent>
+    </dc:creator>
+   </cc:Work>
+  </rdf:RDF>
+ </metadata>
+ <defs>
+  <style type="text/css">*{stroke-linejoin: round; stroke-linecap: butt}</style>
+ </defs>
+ <g id="figure_1">
+  <g id="patch_1">
+   <path d="M 0 583.2 
+L 792 583.2 
+L 792 0 
+L 0 0 
+z
+" style="fill: #ffffff"/>
+  </g>
+  <g id="axes_1">
+   <g id="patch_2">
+    <path d="M 36 100.8 
+L 460.8 100.8 
+Q 468 100.8 468 108 
+L 468 171.36 
+Q 468 178.56 460.8 178.56 
+L 36 178.56 
+Q 28.8 178.56 28.8 171.36 
+L 28.8 108 
+Q 28.8 100.8 36 100.8 
+z
+" clip-path="url(#p7f1a5522d0)" style="fill: #f1f5fa; stroke: #d9e1eb; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_3">
+    <path d="M 36 201.6 
+L 460.8 201.6 
+Q 468 201.6 468 208.8 
+L 468 272.16 
+Q 468 279.36 460.8 279.36 
+L 36 279.36 
+Q 28.8 279.36 28.8 272.16 
+L 28.8 208.8 
+Q 28.8 201.6 36 201.6 
+z
+" clip-path="url(#p7f1a5522d0)" style="fill: #f1f5fa; stroke: #d9e1eb; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_4">
+    <path d="M 36 302.4 
+L 460.8 302.4 
+Q 468 302.4 468 309.6 
+L 468 372.96 
+Q 468 380.16 460.8 380.16 
+L 36 380.16 
+Q 28.8 380.16 28.8 372.96 
+L 28.8 309.6 
+Q 28.8 302.4 36 302.4 
+z
+" clip-path="url(#p7f1a5522d0)" style="fill: #f1f5fa; stroke: #d9e1eb; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_5">
+    <path d="M 36 403.2 
+L 460.8 403.2 
+Q 468 403.2 468 410.4 
+L 468 473.76 
+Q 468 480.96 460.8 480.96 
+L 36 480.96 
+Q 28.8 480.96 28.8 473.76 
+L 28.8 410.4 
+Q 28.8 403.2 36 403.2 
+z
+" clip-path="url(#p7f1a5522d0)" style="fill: #f1f5fa; stroke: #d9e1eb; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_6">
+    <path d="M 525.6 100.8 
+L 756 100.8 
+Q 763.2 100.8 763.2 108 
+L 763.2 171.36 
+Q 763.2 178.56 756 178.56 
+L 525.6 178.56 
+Q 518.4 178.56 518.4 171.36 
+L 518.4 108 
+Q 518.4 100.8 525.6 100.8 
+z
+" clip-path="url(#p7f1a5522d0)" style="fill: #fbf5ef; stroke: #d9e1eb; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_7">
+    <path d="M 525.6 201.6 
+L 756 201.6 
+Q 763.2 201.6 763.2 208.8 
+L 763.2 272.16 
+Q 763.2 279.36 756 279.36 
+L 525.6 279.36 
+Q 518.4 279.36 518.4 272.16 
+L 518.4 208.8 
+Q 518.4 201.6 525.6 201.6 
+z
+" clip-path="url(#p7f1a5522d0)" style="fill: #fbf5ef; stroke: #d9e1eb; stroke-linejoin: miter"/>
+   </g>
+   <g id="patch_8">
+    <path d="M 525.6 302.4 
+L 756 302.4 
+Q 763.2 302.4 763.2 309.6 
+L 763.2 372.96 
+Q 763.2 380.16 756 380.16 
+L 525.6 380.16 
+Q 518.4 380.16 518.4 372.96 
+L 518.4 309.6 
+Q 518.4 302.4 525.6 302.4 
+z
+" clip-path="url(#p7f1a5522d0)" style="fill: #fbf5ef; stroke: #d9e1eb; stroke-linejoin: miter"/>
+   </g>
+   <g id="text_1">
+    <text style="font-weight: 700; font-size: 20px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #182638" x="28.8" y="47.596875" transform="rotate(-0 28.8 47.596875)">A risk score is only one step toward a warning</text>
+   </g>
+   <g id="text_2">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #526173" x="28.8" y="71.718281" transform="rotate(-0 28.8 71.718281)">Conceptual workflow · evaluated every 5 minutes · reference model and alert rule</text>
+   </g>
+   <g id="text_3">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #3266a8" x="41.76" y="123.637969" transform="rotate(-0 41.76 123.637969)">1  Check observations</text>
+   </g>
+   <g id="text_4">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(41.76 142.278281)">Is the road flowing now?</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(41.76 157.103359)">Are the required past inputs available?</text>
+   </g>
+   <g id="patch_9">
+    <path d="M 248.4 180.559687 
+Q 248.4 190.079453 248.4 197.810364 
+" style="fill: none; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 250.4 193.810364 
+L 248.4 197.810364 
+L 246.4 193.810364 
+z
+" style="fill: #526173; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="text_5">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #3266a8" x="41.76" y="224.437969" transform="rotate(-0 41.76 224.437969)">2  Calculate risk</text>
+   </g>
+   <g id="text_6">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(41.76 243.078281)">Predict congestion onset within 30 minutes.</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(41.76 257.903359)">Score ≥ 0.5 creates an alert candidate.</text>
+   </g>
+   <g id="patch_10">
+    <path d="M 248.4 281.359687 
+Q 248.4 290.879453 248.4 298.610364 
+" style="fill: none; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 250.4 294.610364 
+L 248.4 298.610364 
+L 246.4 294.610364 
+z
+" style="fill: #526173; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="text_7">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #3266a8" x="41.76" y="325.237969" transform="rotate(-0 41.76 325.237969)">3  Apply the alert rule</text>
+   </g>
+   <g id="text_8">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(41.76 343.878281)">Has the repeat-alert restriction expired?</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(41.76 358.703359)">The reference rule waits 30 minutes after an alert.</text>
+   </g>
+   <g id="patch_11">
+    <path d="M 248.4 382.159687 
+Q 248.4 391.679453 248.4 399.410364 
+" style="fill: none; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 250.4 395.410364 
+L 248.4 399.410364 
+L 246.4 395.410364 
+z
+" style="fill: #526173; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="text_9">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #087f8c" x="41.76" y="426.037969" transform="rotate(-0 41.76 426.037969)">4  Issue an alert</text>
+   </g>
+   <g id="text_10">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(41.76 444.678281)">Record the warning and start the next</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(41.76 459.503359)">repeat-alert restriction.</text>
+   </g>
+   <g id="patch_12">
+    <path d="M 470.00127 139.68 
+Q 489.601093 139.68 507.412062 139.68 
+" style="fill: none; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 503.412062 137.68 
+L 507.412062 139.68 
+L 503.412062 141.68 
+z
+" style="fill: #526173; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="text_11">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #b65b22" x="531.36" y="123.637969" transform="rotate(-0 531.36 123.637969)">No prediction</text>
+   </g>
+   <g id="text_12">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(531.36 142.278281)">Missing inputs: abstain.</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(531.36 157.103359)">Already slow: current congestion.</text>
+   </g>
+   <g id="patch_13">
+    <path d="M 470.00127 240.48 
+Q 489.601093 240.48 507.412062 240.48 
+" style="fill: none; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 503.412062 238.48 
+L 507.412062 240.48 
+L 503.412062 242.48 
+z
+" style="fill: #526173; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="text_13">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #b65b22" x="531.36" y="224.437969" transform="rotate(-0 531.36 224.437969)">No candidate</text>
+   </g>
+   <g id="text_14">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(531.36 243.078281)">Score below 0.5:</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(531.36 257.903359)">no warning candidate this time.</text>
+   </g>
+   <g id="patch_14">
+    <path d="M 470.00127 341.28 
+Q 489.601093 341.28 507.412062 341.28 
+" style="fill: none; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+    <path d="M 503.412062 339.28 
+L 507.412062 341.28 
+L 503.412062 343.28 
+z
+" style="fill: #526173; stroke: #526173; stroke-width: 1.6; stroke-linecap: round"/>
+   </g>
+   <g id="text_15">
+    <text style="font-weight: 700; font-size: 13px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #b65b22" x="531.36" y="325.237969" transform="rotate(-0 531.36 325.237969)">Candidate suppressed</text>
+   </g>
+   <g id="text_16">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(531.36 343.878281)">The score can be high</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #182638" transform="translate(531.36 358.703359)">while delivery is still blocked.</text>
+   </g>
+   <g id="text_17">
+    <text style="font-weight: 700; font-size: 12px; font-family: 'DejaVu Sans'; text-anchor: start; fill: #182638" x="28.8" y="509.76" transform="rotate(-0 28.8 509.76)">Only current and past information is used above.</text>
+   </g>
+   <g id="text_18">
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #526173" transform="translate(28.8 540.438281)">Later, future observations are used to score alerts. Missing outcomes stay unknown.</text>
+    <text style="font-size: 11px; font-family: 'DejaVu Sans'; fill: #526173" transform="translate(28.8 555.263359)">A score of 0.5 is not a calibrated 50% probability. Issued alerts here are offline records.</text>
+   </g>
+  </g>
+ </g>
+ <defs>
+  <clipPath id="p7f1a5522d0">
+   <rect x="0" y="0" width="792" height="583.2"/>
+  </clipPath>
+ </defs>
+</svg>
