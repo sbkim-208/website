@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <title>FDR northbound study area — partial observed coordinates</title>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_ad316b7c184b108aa7f4f9587c2b322c {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    <div style="position:fixed;bottom:28px;left:10px;z-index:999;background:white;border:1px solid #dbe5ea;border-radius:8px;padding:10px 13px;max-width:250px;color:#17374a;font:12px/1.5 Arial;box-shadow:0 2px 8px #0002"><strong>FDR northbound study area · N ↑</strong><br><span style="color:#087e80">● 217</span> Catherine Slip–25th St<br><span style="color:#3266A8">● 215</span> 25th–63rd St<br><span style="color:#805011">Partial cached coordinates only.</span><br>No live traffic or model predictions.</div>
+    
+            <div class="folium-map" id="map_ad316b7c184b108aa7f4f9587c2b322c" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_ad316b7c184b108aa7f4f9587c2b322c = L.map(
+                "map_ad316b7c184b108aa7f4f9587c2b322c",
+                {
+                    center: [40.731, -73.977],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 13,
+  "zoomControl": true,
+  "preferCanvas": false,
+  "scrollWheelZoom": false,
+}
+
+                }
+            );
+            L.control.scale().addTo(map_ad316b7c184b108aa7f4f9587c2b322c);
+
+            
+
+        
+    
+            var tile_layer_a779a430780716d169edf84594baa6a5 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_a779a430780716d169edf84594baa6a5.addTo(map_ad316b7c184b108aa7f4f9587c2b322c);
+        
+    
+            var poly_line_23eeb8d08de7c990fc48054daa96f5bb = L.polyline(
+                [[40.71141, -73.97866], [40.712, -73.97793], [40.712661, -73.977511], [40.71379, -73.976931], [40.7150904, -73.976251], [40.7164, -73.9756], [40.7172404, -73.975231], [40.7182305, -73.97497], [40.7200604, -73.97471], [40.72158, -73.97453], [40.7223506, -73.974331], [40.72328, -73.973801]],
+                {"bubblingMouseEvents": true, "color": "#087e80", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#087e80", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.95, "smoothFactor": 1.0, "stroke": true, "weight": 7}
+            ).addTo(map_ad316b7c184b108aa7f4f9587c2b322c);
+        
+    
+        var popup_6dcce89c4cda98c8230f4a754409786c = L.popup({
+  "maxWidth": 290,
+});
+
+        
+            
+                var html_47f5766f66e239b46545875079a59cfc = $(`<div id="html_47f5766f66e239b46545875079a59cfc" style="width: 100.0%; height: 100.0%;">Road 217: FDR northbound, Catherine Slip - 25th St (partial coordinates)<br>Only the valid cached coordinate fragment is shown. This is not the full segment extent.</div>`)[0];
+                popup_6dcce89c4cda98c8230f4a754409786c.setContent(html_47f5766f66e239b46545875079a59cfc);
+            
+        
+
+        poly_line_23eeb8d08de7c990fc48054daa96f5bb.bindPopup(popup_6dcce89c4cda98c8230f4a754409786c)
+        ;
+
+        
+    
+    
+            poly_line_23eeb8d08de7c990fc48054daa96f5bb.bindTooltip(
+                `<div>
+                     Road 217: FDR northbound, Catherine Slip - 25th St (partial coordinates)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_cbaa37ea7b15caf936b7a75115ab1c3e = L.marker(
+                [40.7172404, -73.975231],
+                {
+}
+            ).addTo(map_ad316b7c184b108aa7f4f9587c2b322c);
+        
+    
+            var div_icon_70b7a4df9939454a9d2cbaae029c9170 = L.divIcon({
+  "html": "\u003cdiv style=\"background:white;color:#087e80;border:2px solid #087e80;border-radius:5px;padding:3px 8px;font:bold 13px Arial;width:54px\"\u003e217\u003c/div\u003e",
+  "className": "empty",
+});
+        
+    
+            marker_cbaa37ea7b15caf936b7a75115ab1c3e.bindTooltip(
+                `<div>
+                     Road 217: FDR northbound, Catherine Slip - 25th St (partial coordinates)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_cbaa37ea7b15caf936b7a75115ab1c3e.setIcon(div_icon_70b7a4df9939454a9d2cbaae029c9170);
+            
+    
+            var poly_line_a390196403a26ef5711dbceb61fe4c9e = L.polyline(
+                [[40.7369006, -73.974651], [40.73868, -73.973391], [40.73897, -73.97323], [40.73955, -73.97298], [40.7415304, -73.97247], [40.7423406, -73.97229], [40.7428504, -73.97213], [40.74338, -73.971871], [40.7440804, -73.97141], [40.7446706, -73.97103], [40.7455605, -73.970301], [40.7465204, -73.96929]],
+                {"bubblingMouseEvents": true, "color": "#3266A8", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#3266A8", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.95, "smoothFactor": 1.0, "stroke": true, "weight": 7}
+            ).addTo(map_ad316b7c184b108aa7f4f9587c2b322c);
+        
+    
+        var popup_ff251decad288b7e1d6ae7a238a4e9ad = L.popup({
+  "maxWidth": 290,
+});
+
+        
+            
+                var html_ce071a2805914826539d8ea69ddc7b34 = $(`<div id="html_ce071a2805914826539d8ea69ddc7b34" style="width: 100.0%; height: 100.0%;">Road 215: FDR northbound, 25th - 63rd St (partial coordinates)<br>Only the valid cached coordinate fragment is shown. This is not the full segment extent.</div>`)[0];
+                popup_ff251decad288b7e1d6ae7a238a4e9ad.setContent(html_ce071a2805914826539d8ea69ddc7b34);
+            
+        
+
+        poly_line_a390196403a26ef5711dbceb61fe4c9e.bindPopup(popup_ff251decad288b7e1d6ae7a238a4e9ad)
+        ;
+
+        
+    
+    
+            poly_line_a390196403a26ef5711dbceb61fe4c9e.bindTooltip(
+                `<div>
+                     Road 215: FDR northbound, 25th - 63rd St (partial coordinates)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_d20d914c39676e6ba3c346760e9de786 = L.marker(
+                [40.7428504, -73.97213],
+                {
+}
+            ).addTo(map_ad316b7c184b108aa7f4f9587c2b322c);
+        
+    
+            var div_icon_f17b9ceda61d3a7af1e9b1bb6df812ec = L.divIcon({
+  "html": "\u003cdiv style=\"background:white;color:#3266A8;border:2px solid #3266A8;border-radius:5px;padding:3px 8px;font:bold 13px Arial;width:54px\"\u003e215\u003c/div\u003e",
+  "className": "empty",
+});
+        
+    
+            marker_d20d914c39676e6ba3c346760e9de786.bindTooltip(
+                `<div>
+                     Road 215: FDR northbound, 25th - 63rd St (partial coordinates)
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_d20d914c39676e6ba3c346760e9de786.setIcon(div_icon_f17b9ceda61d3a7af1e9b1bb6df812ec);
+            
+    
+            map_ad316b7c184b108aa7f4f9587c2b322c.fitBounds(
+                [[40.70841, -73.98466], [40.7495204, -73.96329]],
+                {}
+            );
+        
+</script>
+</html>
