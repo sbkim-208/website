@@ -3,7 +3,7 @@ title: "Cooperative Intersection Scheduling: FCFS, Tree Search, and GNN"
 category: other # not "research" -> appears under "Other Projects"
 year: 2026
 summary: "I implemented FCFS, paper-based MCTS, a safety extension, and a GNN that learns which vehicle to send next. In a five-seed high-load comparison, the GNN reduced mean vehicle delay by 12.3% and increased throughput by 5.4% relative to FCFS."
-thumbnail: /assets/img/projects/v2v-intersection-scheduling.gif
+thumbnail: /assets/img/projects/v2v-intersection-gnn.gif
 hide_hero: true
 links:
     - name: Code
@@ -35,7 +35,12 @@ links:
 <h3 id="study-scope">What I modeled</h3>
 <p>Cars approach from four directions. The intersection is divided into four smaller areas, so the scheduler can check which movements would occupy the same area at the same time. The cars also follow a movement model that controls how they accelerate and follow the car ahead.</p>
 <p>This models the coordination decision. It does not establish that a real vehicle-to-vehicle communication network would deliver every message reliably or on time.</p>
+<h3>GNN scheduling in the existing simulator</h3>
+<p>The animation below is a fresh run of the trained candidate-selection GNN in the same browser simulator. The GNN chooses a vehicle order from the current traffic graph, and the shared timing model assigns crossing reservations. The selected GNN button and algorithm status identify the active scheduler.</p>
+<figure><img src="{{ '/assets/img/projects/v2v-intersection-gnn.gif' | relative_url }}" alt="Live GNN intersection scheduling demonstration with the GNN button selected and an arrival rate of 24 vehicles per minute per approach" loading="lazy"><figcaption>Trained GNN demo recorded on October 3, 2026. Arrival rate: 24 vehicles/minute per approach; communication range: 55 m; speed limit: 14 m/s. The 12-second clip follows a 60-second warm-up, using seed 20261003. Its on-screen telemetry is illustrative and is separate from the five-seed benchmark below.</figcaption></figure>
+<details><summary>View the earlier MCTS demonstration</summary>
 <figure><img src="{{ '/assets/img/projects/v2v-intersection-scheduling.gif' | relative_url }}" alt="Cars approaching a simulated intersection while the MCTS scheduler chooses crossing times" loading="lazy"><figcaption>The browser simulator using MCTS with heuristic rules. This demonstration uses an arrival setting of 22 vehicles/minute; the high-load measurements below use 24.</figcaption></figure>
+</details>
 </section>
 <section id="study-goals" class="study-section" aria-labelledby="study-title-goals">
 <span class="study-eyebrow">02 / Case study</span>
