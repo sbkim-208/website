@@ -60,7 +60,7 @@ links:
 </style>
 <div id="fdr-study">
 <header class="fdr-hero"><span class="fdr-eyebrow">Mobility data · prediction · operational decisions</span><h2>Could an earlier warning have changed my commute?</h2><span class="fdr-badge">Research phase complete</span> <span class="fdr-badge amber">Offline evaluation</span>
-<p>When I was commuting to work, I chose a route without realizing how bad the traffic ahead would become and ended up late. That experience stayed with me. If I had known earlier, could I have made a different choice?</p>
+<p>During my commute to work, I found that once I reached a congested road segment, my options for taking another route were limited. I wanted a warning before reaching those segments, while I still had time to choose a different route. That experience led me to ask: could congestion be predicted early enough to help me make that choice?</p>
 <p>I started looking at NYC traffic data to see whether an early warning system was something I could actually build. The project began with sensor reliability across the five boroughs, then narrowed to two northbound segments of the FDR Drive. My question became: <strong>when a road is still flowing, can I warn that congestion will start within the next 30 minutes?</strong></p>
 
 <p><strong>I'm wrapping up this phase here.</strong> The latest alert rule reduced useful warnings, so I kept the earlier approach as the comparison baseline. The results below show what changed, why some alternatives were rejected, and what I would investigate next.</p></header>

@@ -49,4 +49,14 @@
 #project-study{overflow-wrap:break-word}
 #project-study .study-table{max-width:100%;overscroll-behavior-x:contain}
 #project-study .study-table table{min-width:480px}
+#project-study .study-chart-body{padding:24px;background:#fff;color:#17374a}
+#project-study .study-chart-body h3{margin:0 0 8px;color:#17374a}
+#project-study .study-chart-unit{font-size:13px;color:#526b7a;margin:0 0 22px}
+#project-study .study-chart-row{display:grid;grid-template-columns:180px minmax(0,1fr) 55px;gap:16px;align-items:center;margin:16px 0;font-size:14px}
+#project-study .study-chart-track{height:26px;background:#eef3f6;border-radius:4px;overflow:hidden}
+#project-study .study-chart-track span{height:100%;display:block;background:#087e80;border-radius:4px}
+#project-study .study-chart-row strong{text-align:right;color:#17374a}
+#project-study #study-scope{scroll-margin-top:90px}
+#project-study .study-table:focus-visible{outline:3px solid #ad6a18;outline-offset:3px}
+@media(max-width:650px){#project-study .study-chart-body{padding:18px 14px}#project-study .study-chart-row{grid-template-columns:minmax(0,1fr) 50px;gap:6px}#project-study .study-chart-row>span{grid-column:1 / -1}#project-study .study-chart-track{height:22px}}
 </style>
