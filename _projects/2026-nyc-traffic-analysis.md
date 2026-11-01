@@ -146,7 +146,25 @@ links:
 <section id="fdr-exit-demo" class="fdr-section" aria-labelledby="fdr-title-demo"><span class="fdr-eyebrow">Exit 2 · Interactive replay</span><h2 id="fdr-title-demo">Would I still have time to take the exit?</h2>
 <p>On January 26, 2026, at 11:50 p.m., segment 217 was still flowing. The model issued a warning in the replay, and the recorded speed fell below the congestion threshold at 11:55. That gives me five minutes to the slowdown. It doesn’t tell me where a driver was when the warning would have appeared.</p>
 <p>In the demo, I kept the road prediction and its outcome from the recorded data. You supply the vehicle’s route, time to the exit, and notification delay. Try leaving the exit 60 seconds away and changing the delay from 10 to 90 seconds. In the first case, the warning appears with 50 seconds left. In the second, the driver would already be 30 seconds past the exit, so the demo skips the exit advice.</p>
-<p class="fdr-callout"><a href="{{ '/assets/interactive/fdr-exit-2-replay.html' | relative_url }}"><strong>Open the Exit 2 demo</strong></a> · Start with the January 26 warning, or try a false alarm and an alert with missing observations.</p>
+<figure><iframe id="fdr-replay-frame" title="Interactive Exit 2 warning simulator with recorded road alerts and adjustable journey timings" src="{{ '/assets/interactive/fdr-exit-2-replay.html' | relative_url }}" loading="lazy" style="display:block;width:100%;height:850px;border:0"></iframe>
+<figcaption>Start with the January 26 warning and move the notification delay slider. You can also try a false alarm or an alert with missing observations. <a href="{{ '/assets/interactive/fdr-exit-2-replay.html' | relative_url }}">Open the simulator in a full page</a>.</figcaption></figure>
+<script>
+(() => {
+  const frame = document.getElementById('fdr-replay-frame');
+  let observer;
+  function fitReplay() {
+    const content = frame.contentDocument?.querySelector('main');
+    if (!content) return;
+    observer?.disconnect();
+    const resize = () => { frame.style.height = Math.ceil(content.getBoundingClientRect().height) + 'px'; };
+    observer = new ResizeObserver(resize);
+    observer.observe(content);
+    resize();
+  }
+  frame.addEventListener('load', fitReplay);
+  fitReplay();
+})();
+</script>
 <p>I didn’t measure a phone’s delivery time, a driver’s decision, or whether the detour would have saved time.</p></section>
 <section id="fdr-6" class="fdr-section" aria-labelledby="fdr-title-6"><span class="fdr-eyebrow">05 / Case study</span><h2 id="fdr-title-6">Limitations</h2><ul><li><strong>The study covers two FDR segments.</strong> It does not establish performance across NYC, other roads, or rail services.</li><li><strong>The evaluation period has been inspected repeatedly.</strong> A new period is needed before claiming that improvements generalize.</li><li><strong>Some alerts cannot be judged.</strong> Of the 2025 reference system's 829 alerts, 190 were false alerts and 241 had insufficient observations to score. The 32.3% false-alert rate applies only to the 588 scoreable alerts.</li><li><strong>An event is not the same as a commuter's experience.</strong> Brief flowing intervals split congestion into separate events here. Whether those should count as one continuing disruption needs further study.</li><li><strong>This was an offline evaluation.</strong> Actual data delivery delays, route changes, notification fatigue, travel-time savings, and reduced lateness were not measured. Passing code tests does not establish those outcomes.</li></ul></section>
 <section id="fdr-7" class="fdr-section" aria-labelledby="fdr-title-7"><span class="fdr-eyebrow">06 / Case study</span><h2 id="fdr-title-7">Where I’m stopping</h2><p>I’m wrapping up with the offline replay. I can now trace one warning from the road reading that triggered it to the slowdown that followed, then see how much a delay would matter at the exit. To test that last step on a real trip, I would need the driver's route and the time the warning appeared on the phone. I’m leaving that for later.</p></section>
