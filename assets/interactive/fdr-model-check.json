@@ -1,0 +1,48 @@
+{
+  "road": 217,
+  "period": "Q1 2026 weekdays",
+  "model_artifact": "weighted.joblib",
+  "model_sha256": "e484e2ee881571a9232caf486c8574f9f6b49e18969cba780259cf5062a3d8b7",
+  "feature_order": [
+    "speed",
+    "lag5",
+    "lag10",
+    "lag30",
+    "lagday",
+    "roll30",
+    "hour",
+    "minute",
+    "dow",
+    "road_215"
+  ],
+  "score_cutoff": 0.5,
+  "repeated_alert_suppression_minutes": 30,
+  "verified_scores": 704,
+  "max_absolute_error": 2.220446049250313e-16,
+  "months": {
+    "2026-01": {
+      "not_applicable": 1515,
+      "scored": 147,
+      "unavailable_current": 4287,
+      "unavailable_history": 387,
+      "scheduled": 6336,
+      "flowing": 534
+    },
+    "2026-02": {
+      "not_applicable": 1415,
+      "scored": 122,
+      "unavailable_current": 3956,
+      "unavailable_history": 267,
+      "scheduled": 5760,
+      "flowing": 389
+    },
+    "2026-03": {
+      "not_applicable": 2009,
+      "scored": 435,
+      "unavailable_current": 3512,
+      "unavailable_history": 380,
+      "scheduled": 6336,
+      "flowing": 815
+    }
+  }
+}
