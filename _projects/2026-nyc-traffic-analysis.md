@@ -1,9 +1,9 @@
 ---
-title: "NYC Traffic Analysis: Can Congestion Be Warned About in Advance?"
+title: "FDR Drive Northbound: Could I Warn a Driver Before Exit 2?"
 category: other # not "research" -> appears under "Other Projects"
 year: 2026
-summary: "I tested whether I could warn about congestion on the FDR Drive while a driver still had time to take another route. The Exit 2 demo replays 2026 road predictions and lets you change when a warning would reach the driver."
-thumbnail: /assets/img/projects/nyc-fdr-prediction-progress.png
+summary: "I tested whether I could warn about congestion on northbound FDR segment 217 while a driver still had time to take Exit 2. The Exit 2 demo replays 2026 road predictions and lets you change when a warning would reach the driver."
+thumbnail: /assets/img/projects/fdr-217-exit-replay.svg
 hide_hero: true
 links:
     - name: Code
@@ -42,7 +42,7 @@ links:
 <div id="fdr-study">
 <header class="fdr-hero"><span class="fdr-eyebrow">FDR Drive northbound · Offline replay</span><h2>Could an earlier warning have changed my commute?</h2>
 <p>During my commute to work, I sometimes found out about traffic only after I’d passed the turn where I could have taken another route. I wanted to know whether road speeds could tell me that a slowdown was coming while I still had a choice.</p>
-<p>I tested that question on two northbound segments of New York’s FDR Drive. For the demo I focused on segment 217, just beyond Exit 2.</p></header>
+<p>I narrowed the study to one stretch of New York’s FDR Drive: northbound segment 217, from Catherine Slip to 25th Street. Exit 2 is the turn a driver would have to take before reaching that stretch.</p></header>
 <div class="fdr-metrics" aria-label="January–March 2026, northbound FDR segment 217, weekday offline evaluation">
 <div class="fdr-metric"><span class="fdr-eyebrow">2026 · Segment 217</span><strong>101 / 290</strong><small>Congestion events detected<br>5–30 minutes in advance</small></div>
 <div class="fdr-metric"><span class="fdr-eyebrow">At least 10 minutes ahead</span><strong>53 / 290</strong><small>Events with an earlier warning<br>among the same 290 events</small></div>
@@ -71,11 +71,11 @@ links:
 })();
 </script></section>
 <section id="fdr-2026" class="fdr-section" aria-labelledby="fdr-title-2026"><span class="fdr-eyebrow">January–March 2026 · Weekdays</span><h2 id="fdr-title-2026">What happened after the alerts?</h2>
-<p>I used a random forest that gave more weight during training to slowdowns that began within 5 or 10 minutes. I kept the settings fixed for the replay. Across segments 215 and 217, it caught 245 of 933 evaluated congestion events at least 10 minutes early. I had already looked at this quarter in earlier work.</p>
+<p>I used a random forest that gave more weight during training to slowdowns that began within 5 or 10 minutes. I kept the settings fixed for the replay. I had already looked at this quarter in earlier work.</p>
 <p>On segment 217, the model warned about 101 of 290 events before they began. Only 53 got at least 10 minutes’ notice. Looking instead at the 137 alerts the model issued, I could match 101 to a later slowdown. There were 15 false alarms and 21 alerts I couldn’t score because road observations were missing.</p></section>
 <section id="fdr-method" class="fdr-section" aria-labelledby="fdr-title-method"><span class="fdr-eyebrow">Model checks</span><h2 id="fdr-title-method">When could I trust the replay?</h2>
-<p>Early on, I treated six sensor records as 30 minutes. A missing reading meant I was evaluating the wrong time, so I switched to matching actual timestamps. I also tried waiting for five minutes of recovery before allowing another alert. In the 2025 comparison that cut the number of events caught at least 10 minutes early from 242 to 215 out of the same 1,045. I kept the original 30-minute repeat-alert rule.</p>
+<p>Early on, I treated six sensor records as 30 minutes. A missing reading meant I was evaluating the wrong time, so I switched to matching actual timestamps. I also tried waiting for five minutes of recovery before allowing another alert. On segment 217 in 2025, that cut the number of events caught at least 10 minutes early from 99 to 86 out of the same 501 events. I kept the original 30-minute repeat-alert rule.</p>
 <p>For the 2026 replay I checked every scheduled five-minute reading on segment 217. Of 18,432 checks, 1,738 showed the road was flowing. The model could score 704 of those. The other 1,034 lacked the recent readings it needed. I show those separately in the simulator because I wouldn’t want someone to read silence as an all-clear.</p>
-<p>I ran the saved model again on all 704 inputs in the original feature order. Every score matched the replay within 10<sup>−12</sup>. <a href="{{ '/assets/interactive/fdr-model-check.json' | relative_url }}">View the model version and monthly counts</a> · <a href="{{ '/assets/interactive/nyc-fdr-study-map.html' | relative_url }}">View the study area</a>.</p></section>
+<p>I ran the saved model again on all 704 inputs in the original feature order. Every score matched the replay within 10<sup>−12</sup>. <a href="{{ '/assets/interactive/fdr-model-check.json' | relative_url }}">View the model version and monthly counts</a>.</p></section>
 <p class="fdr-source"><em>Updated November 1, 2026. The 2025 rule comparison uses the reference model. The Exit 2 simulator uses the weighted model’s 2026 replay.</em></p>
 </div>

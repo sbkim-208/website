@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="640" height="360" viewBox="0 0 640 360" role="img" aria-labelledby="title desc">
+<title id="title">FDR northbound segment 217 and Exit 2</title>
+<desc id="desc">Schematic of the turn before segment 217, from Catherine Slip to 25th Street.</desc>
+<rect width="640" height="360" fill="#17374a"/>
+<g font-family="system-ui, sans-serif" fill="#fff">
+<text x="40" y="64" font-size="22">FDR DRIVE · NORTHBOUND</text>
+<text x="40" y="132" font-size="52" font-weight="650">Before Exit 2</text>
+<text x="40" y="176" font-size="22">Segment 217 · Catherine Slip to 25th St</text>
+<path d="M42 300H595m-365 0 75-72h112" fill="none" stroke="#9dd6cf" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+<circle cx="230" cy="300" r="11" fill="#ffd49d"/>
+<text x="317" y="215" font-size="20">Exit 2</text>
+<text x="440" y="282" font-size="20">217 ahead</text>
+</g></svg>
