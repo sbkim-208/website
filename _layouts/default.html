@@ -3,7 +3,7 @@
 <head>
   {% include head.html %}
 </head>
-<body>
+<body{% if page.layout == 'project' %} class="reading-page"{% endif %}>
   <a class="skip-link" href="#content">Skip to content</a>
   {% include nav.html %}
   <main id="content" class="wrap">

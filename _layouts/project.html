@@ -2,6 +2,7 @@
 layout: default
 ---
 <article class="project-page">
+  <header class="project-header">
   <h1>{{ page.title }}</h1>
   {% if page.authors %}<p class="authors">{{ page.authors }}</p>{% endif %}
   {% if page.venue %}<p class="venue">{{ page.venue }}{% if page.year %}, {{ page.year }}{% endif %}</p>{% endif %}
@@ -18,9 +19,11 @@ layout: default
   </p>
   {% endif %}
 
+  </header>
+
   <div class="project-body">
-    {{ content }}
+    {{ content | replace: '<table>', '<div class="table-scroll" role="region" aria-label="Data table" tabindex="0"><table>' | replace: '</table>', '</table></div>' }}
   </div>
 
-  <p class="back"><a href="{{ '/#research' | relative_url }}">← Back to all projects</a></p>
+  <p class="back"><a href="{{ '/#projects' | relative_url }}">← Back to all projects</a></p>
 </article>
