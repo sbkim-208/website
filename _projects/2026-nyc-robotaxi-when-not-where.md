@@ -16,7 +16,7 @@ I looked for the places where New York runs short of rides, and I found times of
 - **Busy and slow.** Only 4.4% of trips were both, less than the 6.25% expected by chance, and 81% of them fell in three time blocks.
 - **Weather.** Rain added about 5 seconds to the wait and snow about 16. The gap between time blocks was 98 seconds.
 - **Break-even.** A robotaxi that costs $100,000 a year needs about 14 trips a day; at $150,000 it needs 21.
-- **AV versus driver.** Under my assumptions, in four long-wait zones on weekday evenings one AV takes over trips worth $383 to $476 in driver pay, against a fixed cost of $274 a day, so the AV is cheaper. If it has to drive back empty after each trip, the figure falls to $208–$250 and the driver is cheaper.
+- **AV versus driver.** I replayed real requests with AVs taking over trips in four long-wait zones. With 41% of its miles empty, one AV replaces $248 to $300 of driver pay in a weekday evening, against a fixed cost of $274 a day: about level. The answer turns on how much the AV drives empty ($205–$252 if it drives all the way back, $374–$479 if it never drives empty) and on what it costs.
 
 ## 1. Near stations: more rides, but not a longer wait
 {: #study-scope }
@@ -72,74 +72,67 @@ The first three sections did not find places where cars run short, so I could no
 
 ### How it was run
 
-I cannot put real vehicles on the street, so this was run as a replay. It takes the 4.76 million real trips of 2025 from four zones (Midtown Center, Times Sq/Theatre District, Lower East Side, Williamsburg North Side) and plays the requests back in the order they came in. An added vehicle takes a rider only when it would arrive sooner than the real driver did. Human drivers are assumed not to react.
+I cannot put real vehicles on the street, so this was run as a replay. It takes the 4.76 million real trips of 2025 from four zones (Midtown Center, Times Sq/Theatre District, Lower East Side, Williamsburg North Side) and plays the requests back in the order they came in. An AV takes a rider only when it would arrive sooner than the real driver did. Human drivers are assumed not to react.
 
-One rule changes the result more than anything else: what the vehicle does after it drops a rider off. I ran both ends.
+One rule changes the result more than anything else: what the AV does after it drops a rider off outside the zone. I ran three versions.
 
 | Rule | What it means | Miles driven empty |
 | --- | --- | ---: |
-| Free again at drop-off (main run) | The vehicle can take the next request in the zone right away | 3–6% |
-| One zone only | The vehicle picks up only in its zone, so it drives back empty after almost every trip | about 51% |
-
-The main run is the best case, because a real vehicle has to find its next rider near where it dropped the last one, and those riders are not in my four zones. The one-zone run is the worst case. Waymo's California reports put empty miles at about 41%, so I read the two runs as a range, not as two forecasts.
+| Drives all the way back | The AV picks up only in its zone and returns empty after almost every trip. The lower edge | about 51% |
+| Part of the way back (reference) | The AV needs about two thirds of the trip time before its next request. I set this so that 41% of its miles are empty, the share Waymo reports in California and the share the break-even used | 41% |
+| Free again at drop-off | The AV is back in the zone the moment the rider gets out. This cannot happen; it is the upper edge | 3–7% |
 
 ### AV versus driver: replaced driver pay against fixed cost
 
 For each AV I used the same idea as the break-even: what it leaves = driver pay on the trips it took over − its driving cost − its fixed cost per day.
 
-**Under my assumptions the AV is cheaper.** In all four zones one AV replaces $383 to $476 of driver pay in a weekday evening, against a fixed cost of $274 a day.
+![Driver pay one AV replaces in 8 evening hours under the three rules, against a fixed cost of $274 and $411 a day]({{ '/assets/img/projects/nyc-robotaxi-saved-per-vehicle.png' | relative_url }})
 
-![What one added vehicle saves in 8 evening hours under the two rules, against a fixed cost of $274 and $411 a day]({{ '/assets/img/projects/nyc-robotaxi-saved-per-vehicle.png' | relative_url }})
+Weekday, 4 pm to midnight, 70 AVs in the zone, per AV:
 
-| Zone | Trips in 8 hours, main run | Saved, main run | Saved, one zone only |
-| --- | ---: | ---: | ---: |
-| Midtown Center | 18.7 | $464 | $243 |
-| Times Sq / Theatre District | 18.1 | $476 | $250 |
-| Lower East Side | 21.1 | $421 | $228 |
-| Williamsburg North Side | 20.6 | $383 | $208 |
+| Zone | Trips in 8 hours (reference) | Drives all the way back | Reference, 41% empty | Free at drop-off |
+| --- | ---: | ---: | ---: | ---: |
+| Midtown Center | 12.0 | $245 | $294 | $466 |
+| Times Sq / Theatre District | 11.6 | $252 | $300 | $479 |
+| Lower East Side | 13.9 | $220 | $264 | $405 |
+| Williamsburg North Side | 13.7 | $205 | $248 | $374 |
 
-- **In the main run, one weekday evening covers the day.** Every zone clears $274 a day ($100,000 a year), and three of the four clear $411 ($150,000 a year).
-- **Under the one-zone rule it does not.** The same evening covers 76% to 91% of $274, and the rest would have to come from the other 16 hours, which I did not look at.
-- **The difference is empty driving.** The riders, the fares and the zones are the same in both runs. Only the drive back changes, and it nearly halves the trips a vehicle can take.
-- **Longer waits, larger saving.** Within each zone I compared evenings with short real waits and evenings with long ones. For every extra minute of wait, one AV replaced about $21 more driver pay (about 5%). In Midtown Center it was $434 on short-wait evenings and $505 on long-wait ones. The AV does not take more trips on those evenings; each trip takes longer and pays the driver more.
+- **At 41% empty miles the AV and the driver cost about the same.** One AV replaces $248 to $300 of driver pay in the eight evening hours, against $274 a day ($100,000 a year). That is about $20 to $26 above the cost in Midtown Center and Times Sq, about $10 below in Lower East Side and $26 below in Williamsburg. None reaches $411 ($150,000 a year). Differences this small do not decide it.
+- **The edges are far apart.** If the AV drives all the way back it replaces $205 to $252, and the driver is cheaper. If it never drove empty it would replace $374 to $479, and the AV would be cheaper.
+- **So the answer turns on empty driving and on the assumed cost.** The riders, the fares and the zones are the same in all three versions. Only the time after a drop-off changes.
+- **Only the evening is counted.** $274 is the cost of a whole day, and the pay replaced comes from eight evening hours on weekdays. What the AV does in the other 16 hours would come on top, and I did not look at it.
+- **Evenings with longer waits.** On evenings with longer waits one AV replaced more pay, about $13 more for every extra minute of wait in the reference run (about 5%), although it took fewer trips. Trips are longer and pay the driver more on those evenings. This is a pattern across evenings, not an effect of waiting: it disappears once the evening's level of driver pay is held fixed.
 
 ### How many AVs
 
-The number of AVs in a zone is a whole number n, and I chose it to make this as large as possible: S(n) − c·n, where S(n) is the driver pay that n AVs replace in an evening and c is the fixed cost of one AV per day. S(n) has no formula, because it comes out of the replay, so I ran every n from 10 to 300 in steps of 10 and kept the best one. The rule this gives is simple: keep adding AVs until one more replaces less driver pay than it costs.
+The number of AVs in a zone is a whole number n, and the best one makes this as large as possible: S(n) − c·n, where S(n) is the driver pay that n AVs replace in an evening and c is the fixed cost of one AV per day. S(n) has no formula, because it comes out of the replay, so I ran every n from 10 to 300 in steps of 10 and kept the best one. The rule this gives is simple: keep adding AVs until one more replaces less driver pay than it costs.
 
-![Driver pay replaced by one more AV against vehicles added, four zones, with fixed-cost lines at $274 and $411 a day]({{ '/assets/img/projects/nyc-robotaxi-fleet-size.png' | relative_url }})
+![Driver pay replaced by one more AV against AVs added, four zones, with fixed-cost lines at $274 and $411 a day]({{ '/assets/img/projects/nyc-robotaxi-fleet-size.png' | relative_url }})
 
-| Zone | Requests in an evening | Best number at $274 a day | Best number at $411 a day |
-| --- | ---: | ---: | ---: |
-| Midtown Center | 5,088 | about 260 | about 150 |
-| Times Sq / Theatre District | 4,059 | about 210 | about 130 |
-| Lower East Side | 2,765 | about 100 | about 50 |
-| Williamsburg North Side | 2,901 | about 100 | 0 |
-
-The top of each curve is flat, so these are rough numbers. At the best number the AVs serve 70% to 80% of the zone's requests, which is where the assumption that drivers do not react is weakest. Under the one-zone rule the best number is zero in every zone.
+In the reference run the curves sit within about $25 of the $274 line, so the number of AVs is not pinned down. In Midtown Center the best number is about 180 at $274 a day, about 250 at $249 and zero at $299. If the AV drives all the way back, the best number is zero in every zone. At the upper edge it would be about 90 to 260 per zone, and at that point the AVs would serve 70% to 80% of the zone's requests, which is where the assumption that drivers do not react is weakest.
 
 ### What riders get: shorter waits
 
 The waits were measured a little differently from the money. For the money, AVs take over trips. For the waits, the real drivers are still there and AVs are added on top of them.
 
-![Average wait against vehicles added, weekday 4 pm to midnight, four zones, main run]({{ '/assets/img/projects/nyc-robotaxi-wait-by-vehicles.png' | relative_url }})
+![Average wait against AVs added, weekday 4 pm to midnight, four zones, reference run]({{ '/assets/img/projects/nyc-robotaxi-wait-by-vehicles.png' | relative_url }})
 
-Weekday, 4 pm to midnight, 70 vehicles added:
+Weekday, 4 pm to midnight, 70 AVs added, reference run:
 
-| Zone | Average wait, main run | Average wait, one zone only | Waiting over 5 min 45 s, main run |
+| Zone | Average wait | Waiting over 5 min 45 s | Requests the AVs served |
 | --- | ---: | ---: | ---: |
-| Midtown Center | 320 → 268 s | 320 → 292 s | 33.7% → 24.0% |
-| Times Sq / Theatre District | 336 → 268 s | 336 → 299 s | 36.2% → 24.3% |
-| Lower East Side | 236 → 162 s | 236 → 196 s | 16.8% → 7.4% |
-| Williamsburg North Side | 223 → 166 s | 223 → 193 s | 13.6% → 5.8% |
+| Midtown Center | 320 → 286 s | 33.7% → 27.3% | 17% |
+| Times Sq / Theatre District | 336 → 293 s | 36.2% → 28.4% | 20% |
+| Lower East Side | 236 → 189 s | 16.8% → 10.2% | 35% |
+| Williamsburg North Side | 223 → 186 s | 13.6% → 7.7% | 33% |
 
-In the main run the average wait falls by about 7 to 11 seconds for every 10 vehicles, and by 50 to 75 seconds with 70. Under the one-zone rule it is about half of that. Either way, it takes many vehicles to move the average, because one zone has 2,800 to 5,100 requests in an evening and 70 vehicles serve between a quarter and a half of them.
+The average wait falls by about 5 to 7 seconds for every 10 AVs, and by 33 to 47 seconds with 70. That is less than half of the 98-second gap between time blocks. It takes many AVs to move the average, because one zone has 2,800 to 5,100 requests in an evening.
 
 ### What this does and does not show
 
-Under the assumptions listed here, replacing drivers with AVs is cheaper in the long-wait zones and hours, and more so on evenings when waits are longer. The assumptions are: the AV costs $100,000 a year; it finds its next rider right after each drop-off; it costs $0.15 a mile to drive; drivers do not react and driver pay stays where it is. The second one can reverse the result. Shorter waits are a side effect, and they are measured in seconds.
+With 41% of its miles empty and a cost of $100,000 a year, an AV that takes over evening trips in these zones costs about the same as the drivers it replaces. It is clearly cheaper only if it drives much less empty than that, or costs less. Shorter waits are a side effect, and they are measured in seconds.
 
-It is not a forecast. In the replay a wait can only get shorter, so the direction is built in and only the sizes mean something. The real cost of an AV is not public. And I could not look at the other case, where AVs go where drivers are scarce and serve riders who would otherwise give up, because those riders are not in the data.
+It is not a forecast. In the replay a wait can only get shorter, so the direction is built in and only the sizes mean something. The AV is assumed to know how long the real driver would take, and drivers are assumed not to react. The real cost of an AV is not public. And I could not look at the other case, where AVs go where drivers are scarce and serve riders who would otherwise give up, because those riders are not in the data.
 
 ## 6. Limits
 {: #study-limits }
